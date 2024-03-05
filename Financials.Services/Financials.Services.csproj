@@ -16,4 +16,8 @@
     <Folder Include="Services\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Financials.Core\Financials.Core.csproj" />
+  </ItemGroup>
+
 </Project>
