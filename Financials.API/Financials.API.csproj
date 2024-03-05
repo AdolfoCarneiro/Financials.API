@@ -2,7 +2,6 @@
 
 	<PropertyGroup>
 		<TargetFramework>net8.0</TargetFramework>
-		<Nullable>enable</Nullable>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<GenerateDocumentationFile>true</GenerateDocumentationFile>
 	</PropertyGroup>
@@ -22,6 +21,7 @@
 
 	<ItemGroup>
 	  <ProjectReference Include="..\Financials.Core\Financials.Core.csproj" />
+	  <ProjectReference Include="..\Financials.Services\Financials.Services.csproj" />
 	  <ProjectReference Include="..\Financials.Infrastructure\Financials.Infrastructure.csproj" />
 	</ItemGroup>
 

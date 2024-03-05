@@ -1,12 +1,16 @@
 
 using Financials.Core.Entity;
+using Financials.Infrastructure;
+using Financials.Infrastructure.Configuraton;
 using Financials.Infrastructure.Context;
+using Financials.Infrastructure.Repositorio;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using System.Reflection;
+using Financials.Services;
 
 namespace Financials.API
 {
@@ -73,13 +77,16 @@ namespace Financials.API
             builder.Services.AddControllers().AddNewtonsoftJson();
             builder.Services.AddEndpointsApiExplorer();
 
-            var defaultConnectionString = builder.Configuration.GetConnectionString("DefaultConnection");
-
-            builder.Services.AddDbContext<FinancialsDbContext>(options => options.UseSqlServer(defaultConnectionString));
-
             builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
                 .AddEntityFrameworkStores<FinancialsDbContext>()
                 .AddDefaultTokenProviders();
+
+            builder.Services.AddScoped<IFInancialsRepositorio, FinancialsRepositorio>();
+
+            builder.Services.Configure<JWTConfiguration>(opt => builder.Configuration.GetSection("Jwt").Bind(opt));
+
+            builder.Services.AddInfrastructure(builder.Configuration);
+            builder.Services.AddServices();
 
             var app = builder.Build();
 

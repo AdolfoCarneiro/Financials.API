@@ -8,44 +8,6 @@ namespace Financials.Infrastructure.Repositorio
     {
         public FinancialsDbContext _dbContext { get; set; } = dbContext;
 
-        public virtual IEnumerable<T> GetPage(
-               Expression<Func<T, bool>> filter = null,
-               Expression<Func<T, object>> orderByDescending = null,
-               Expression<Func<T, object>> orderBy = null,
-               string includeProperties = "",
-               int page = 1,
-               int take = 50)
-        {
-            IQueryable<T> query = _dbContext.Set<T>();
-
-            if (filter != null)
-            {
-                query = query.Where(filter);
-            }
-
-            foreach (var includeProperty in includeProperties.Split
-                (new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
-            {
-                query = query.Include(includeProperty);
-            }
-
-            var skip = page <= 1 ? 0 : (page - 1) * take;
-            if (orderByDescending != null)
-            {
-                query = query.OrderByDescending(orderByDescending).Skip(skip).Take(take);
-                return query.AsNoTracking().ToList();
-            }
-            if (orderBy != null)
-            {
-                query = query.OrderBy(orderBy).Skip(skip).Take(take);
-                return query.AsNoTracking().ToList();
-            }
-            else
-            {
-                query = query.Skip(skip).Take(take);
-                return query.AsNoTracking().ToList();
-            }
-        }
         public List<T> GetAll()
         {
             IQueryable<T> result = _dbContext.Set<T>();
@@ -65,7 +27,7 @@ namespace Financials.Infrastructure.Repositorio
             }
             return query.ToList();
         }
-        public async Task<T> GetById(Guid id, string[] includeProperties)
+        public async Task<T> GetById(Guid id, string[] includeProperties = null)
         {
             var keyProperty = _dbContext.Model.FindEntityType(typeof(T)).FindPrimaryKey().Properties.FirstOrDefault();
             var parameter = Expression.Parameter(typeof(T), "e");
@@ -140,6 +102,44 @@ namespace Financials.Infrastructure.Repositorio
                 .Where(filter);
 
             return entidades;
+        }
+        public virtual IEnumerable<T> GetPage(
+           Expression<Func<T, bool>> filter = null,
+           Expression<Func<T, object>> orderByDescending = null,
+           Expression<Func<T, object>> orderBy = null,
+           string includeProperties = "",
+           int page = 1,
+           int take = 50)
+        {
+            IQueryable<T> query = _dbContext.Set<T>();
+
+            if (filter != null)
+            {
+                query = query.Where(filter);
+            }
+
+            foreach (var includeProperty in includeProperties.Split
+                (new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
+            {
+                query = query.Include(includeProperty);
+            }
+
+            var skip = page <= 1 ? 0 : (page - 1) * take;
+            if (orderByDescending != null)
+            {
+                query = query.OrderByDescending(orderByDescending).Skip(skip).Take(take);
+                return query.AsNoTracking().ToList();
+            }
+            if (orderBy != null)
+            {
+                query = query.OrderBy(orderBy).Skip(skip).Take(take);
+                return query.AsNoTracking().ToList();
+            }
+            else
+            {
+                query = query.Skip(skip).Take(take);
+                return query.AsNoTracking().ToList();
+            }
         }
         public virtual IEnumerable<TResult> GetPageLazy<TResult, TEntity>(
            Expression<Func<T, TResult>> selector,
