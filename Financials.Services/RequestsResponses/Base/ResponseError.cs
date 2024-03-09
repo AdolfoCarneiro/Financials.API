@@ -10,7 +10,6 @@
         }
 
         public ResponseErrorType Type { get; set; }
-
         public string CustomMessage { get; set; }
         public string InternalError { get; set; }
     }

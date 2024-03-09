@@ -1,4 +1,4 @@
-﻿namespace Financials.Services.RequestsResponses
+﻿namespace Financials.Services.RequestsResponses.Account
 {
     public class UsuarioRequest
     {
