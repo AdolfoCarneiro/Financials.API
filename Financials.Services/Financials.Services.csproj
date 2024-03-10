@@ -13,10 +13,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Interfaces\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\Financials.Core\Financials.Core.csproj" />
     <ProjectReference Include="..\Financials.Infrastructure\Financials.Infrastructure.csproj" />
   </ItemGroup>

@@ -1,4 +1,6 @@
-﻿namespace Financials.Core.VO
+﻿using Financials.Core.Enums;
+
+namespace Financials.Core.VO
 {
     public class UsuarioVO
     {
