@@ -6,6 +6,7 @@ using Financials.Services.RequestsResponses.Account;
 using Financials.Services.RequestsResponses.Base;
 using FluentValidation;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Options;
 
 namespace Financials.Services.Services
 {
@@ -19,10 +20,27 @@ namespace Financials.Services.Services
         private readonly IValidator<UsuarioRequest> _usuarioValidator;
         private readonly JWTConfiguration _jwtConfiguration;
 
+        public AccountService(
+            UserManager<ApplicationUser> userManager,
+            RoleManager<IdentityRole> roleManager,
+            IFInancialsRepositorio repositorio,
+            SignInManager<ApplicationUser> signInManager,
+            IValidator<LoginRequest> loginValidator,
+            IValidator<UsuarioRequest> usuarioValidator,
+            IOptions<JWTConfiguration> option)
+        {
+            this._userManager = userManager;
+            this._roleManager = roleManager;
+            this._repositorio = repositorio;
+            this._signInManager = signInManager;
+            this._loginValidator = loginValidator;
+            this._usuarioValidator = usuarioValidator;
+            this._jwtConfiguration = option.Value;
+        }
+
         public async Task<ApplicationResponse<UserLoginResponse>> Autenticar(LoginRequest request)
         {
-            var response = new ApplicationResponse<UserLoginResponse>();
-            return response;
+            throw new NotImplementedException();
         }
     }
 }
