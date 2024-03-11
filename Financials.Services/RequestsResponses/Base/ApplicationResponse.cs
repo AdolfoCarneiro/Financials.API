@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Identity;
 
 namespace Financials.Services.RequestsResponses.Base
 {
-    public class ApplicationResponse<T> where T : class
+    public sealed class ApplicationResponse<T> where T : class
     {
         public bool Valid
         {
