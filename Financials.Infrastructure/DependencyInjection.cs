@@ -2,6 +2,7 @@
 using Financials.Infrastructure.Configuraton;
 using Financials.Infrastructure.Context;
 using Financials.Infrastructure.Repositorio;
+using Financials.Infrastructure.Seeds;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -20,6 +21,12 @@ namespace Financials.Infrastructure
 
             services.AddScoped<IFInancialsRepositorio, FinancialsRepositorio>();
 
+            return services;
+        }
+
+        public static IServiceCollection AddInitialSeedData(this IServiceCollection services)
+        {
+            services.AddScoped<ISeedInitialUserAndRoles, SeedInitialUserAndRoles>();
             return services;
         }
     }

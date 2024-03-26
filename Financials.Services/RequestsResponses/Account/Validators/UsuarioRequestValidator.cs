@@ -14,7 +14,7 @@ namespace Financials.Services.RequestsResponses.Account.Validators
             RuleFor(x => x.Nome)
                 .NotEmpty()
                 .MinimumLength(3)
-                .WithMessage("O nome informado é invãlido");
+                .WithMessage("O nome informado é inválido");
 
             RuleFor(x => x.Senha)
                 .NotEmpty()

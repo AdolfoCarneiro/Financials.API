@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Financials.Infrastructure.Migrations
 {
     [DbContext(typeof(FinancialsDbContext))]
-    [Migration("20240303003929_initial_create")]
+    [Migration("20240326130214_initial_create")]
     partial class initial_create
     {
         /// <inheritdoc />
@@ -54,7 +54,6 @@ namespace Financials.Infrastructure.Migrations
                         .HasColumnType("datetimeoffset");
 
                     b.Property<string>("Nome")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("NormalizedEmail")

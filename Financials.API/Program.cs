@@ -11,6 +11,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using System.Reflection;
 using Financials.Services;
+using Financials.Infrastructure.Seeds;
 
 namespace Financials.API
 {
@@ -81,11 +82,11 @@ namespace Financials.API
                 .AddEntityFrameworkStores<FinancialsDbContext>()
                 .AddDefaultTokenProviders();
 
-            builder.Services.AddScoped<IFInancialsRepositorio, FinancialsRepositorio>();
-
             builder.Services.Configure<JWTConfiguration>(opt => builder.Configuration.GetSection("Jwt").Bind(opt));
 
             builder.Services.AddInfrastructure(builder.Configuration);
+            builder.Services.AddInitialSeedData();
+            builder.Services.AddValidators();
             builder.Services.AddServices();
 
             var app = builder.Build();
@@ -114,12 +115,25 @@ namespace Financials.API
                 options.RoutePrefix = string.Empty;
             });
 
+            SeedUserRoles(app);
+
             app.UseAuthorization();
 
 
             app.MapControllers();
-
+            
             app.Run();
+
+            void SeedUserRoles(IApplicationBuilder app)
+            {
+                using (var serviceScope = app.ApplicationServices.CreateScope())
+                {
+                    var seed = serviceScope.ServiceProvider.GetService<ISeedInitialUserAndRoles>();
+                    seed.SeedRoles();
+                    seed.SeedUsers();
+
+                }
+            }
         }
     }
 }

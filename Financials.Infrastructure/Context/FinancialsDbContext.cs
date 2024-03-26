@@ -10,6 +10,7 @@ namespace Financials.Infrastructure.Context
         {
             
         }
+
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
