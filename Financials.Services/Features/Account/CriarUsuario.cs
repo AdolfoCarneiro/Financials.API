@@ -26,6 +26,7 @@ namespace Financials.Services.Features.Account
 
         public async Task<ApplicationResponse<UsuarioResponse>> Run(UsuarioRequest request)
         {
+            ApplicationUser applicationUser = new ApplicationUser();
             var response = new ApplicationResponse<UsuarioResponse>();
             try
             {
@@ -36,7 +37,7 @@ namespace Financials.Services.Features.Account
                     return response;
                 }
 
-                var applicationUser = new ApplicationUser()
+                applicationUser = new ApplicationUser()
                 {
                     Email = request.Email,
                     Nome = request.Nome,
@@ -46,6 +47,11 @@ namespace Financials.Services.Features.Account
                 };
 
                 var userResult = await _userManager.CreateAsync(applicationUser,request.Senha);
+                if (!userResult.Succeeded)
+                {
+                    response.AddError(userResult.Errors.ToList());
+                    return response;
+                }
 
                 foreach(var role in request.Roles)
                 {
@@ -53,15 +59,21 @@ namespace Financials.Services.Features.Account
 
                     if (!roleExists)
                     {
-                        var identityRole = new IdentityRole(role);
-                        var roleResult = await _roleManager.CreateAsync(identityRole);
+                        response.AddError(ResponseErrorType.NotFound, $"A role informada({role}) não foi encontrada");
+                        return response;
                     }
 
-                    await _userManager.AddToRoleAsync(applicationUser, role);
+                    var addUserToRoleResult = await _userManager.AddToRoleAsync(applicationUser, role);
+                    if (!addUserToRoleResult.Succeeded)
+                    {
+                        response.AddError(addUserToRoleResult.Errors.ToList());
+                        return response;
+                    }
                 }
             }
             catch (Exception ex)
             {
+                await _userManager.DeleteAsync(applicationUser);
                 response.AddError(ex, "Ocorreu um erro ao criar a usuário");
             }
             return response;
