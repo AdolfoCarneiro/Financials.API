@@ -1,4 +1,5 @@
 ﻿using Financials.Services.Features.Account;
+using Financials.Services.Interfaces;
 using Financials.Services.Interfaces.Account;
 using Financials.Services.RequestsResponses.Account;
 using Financials.Services.RequestsResponses.Account.Validators;
@@ -11,6 +12,7 @@ namespace Financials.Services
         public static IServiceCollection AddServices(this IServiceCollection services)
         {
             services.AddScoped<ICriarUsuario, CriarUsuario>();
+            services.AddScoped<ILogin, Login>();
             return services;
         }
 

@@ -38,5 +38,7 @@ namespace Financials.Services.RequestsResponses.Base
         {
             this.Error ??= new ResponseError(type, customMessage);
         }
+
+        public void AddData(T data) {  this.Data = data; }
     }
 }
