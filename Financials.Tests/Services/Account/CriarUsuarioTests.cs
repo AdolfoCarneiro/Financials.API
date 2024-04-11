@@ -1,12 +1,10 @@
 ﻿using Financials.Core.Entity;
 using Financials.Services.Features.Account;
-using Financials.Services.Interfaces.Account;
 using Financials.Services.RequestsResponses.Account;
 using Financials.Services.RequestsResponses.Base;
 using FluentValidation.Results;
 using Microsoft.AspNetCore.Identity;
 using Moq;
-using NUnit.Framework.Legacy;
 
 namespace Financials.Tests.Services.Account
 {
