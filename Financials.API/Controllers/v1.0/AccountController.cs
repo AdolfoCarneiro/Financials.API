@@ -1,5 +1,4 @@
-﻿using Financials.Services.Interfaces;
-using Financials.Services.Interfaces.Account;
+﻿using Financials.Services.Features.Account;
 using Financials.Services.RequestsResponses.Account;
 using Financials.Services.RequestsResponses.Base;
 using Microsoft.AspNetCore.Authorization;
@@ -14,12 +13,12 @@ namespace Financials.API.Controllers.v1._0
     [Authorize]
     public class AccountController : ControllerBase
     {
-        private readonly ICriarUsuario _criarUsuario;
-        private readonly ILogin _login;
+        private readonly CriarUsuario _criarUsuario;
+        private readonly Login _login;
 
         public AccountController(
-            ICriarUsuario criarUsuario,
-            ILogin login)
+            CriarUsuario criarUsuario,
+            Login login)
         {
             _criarUsuario = criarUsuario;
             _login = login;

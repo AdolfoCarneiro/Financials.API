@@ -1,5 +1,4 @@
 ﻿using Financials.Core.Entity;
-using Financials.Services.Interfaces.Account;
 using Financials.Services.RequestsResponses.Account;
 using Financials.Services.RequestsResponses.Base;
 using FluentValidation;
@@ -7,22 +6,15 @@ using Microsoft.AspNetCore.Identity;
 
 namespace Financials.Services.Features.Account
 {
-    public class CriarUsuario : ICriarUsuario
-    {
-        private readonly UserManager<ApplicationUser> _userManager;
-        private readonly RoleManager<IdentityRole> _roleManager;
-        private readonly IValidator<UsuarioRequest> _validator;
-
-        public CriarUsuario(
-            UserManager<ApplicationUser> userManager,
-            IValidator<UsuarioRequest> validator,
-            RoleManager<IdentityRole> roleManager
+    public class CriarUsuario(
+        UserManager<ApplicationUser> userManager,
+        IValidator<UsuarioRequest> validator,
+        RoleManager<IdentityRole> roleManager
         )
-        {
-            _userManager = userManager;
-            _validator = validator;
-            _roleManager = roleManager;
-        }
+    {
+        private readonly UserManager<ApplicationUser> _userManager = userManager;
+        private readonly RoleManager<IdentityRole> _roleManager = roleManager;
+        private readonly IValidator<UsuarioRequest> _validator = validator;
 
         public async Task<ApplicationResponse<UsuarioResponse>> Run(UsuarioRequest request)
         {
