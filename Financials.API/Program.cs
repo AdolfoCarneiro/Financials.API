@@ -82,16 +82,16 @@ namespace Financials.API
             builder.Services.AddControllers().AddNewtonsoftJson();
             builder.Services.AddEndpointsApiExplorer();
 
-            builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
-                .AddEntityFrameworkStores<FinancialsDbContext>()
-                .AddDefaultTokenProviders();
+            //builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
+            //    .AddEntityFrameworkStores<FinancialsDbContext>()
+            //    .AddDefaultTokenProviders();
 
-            builder.Services.Configure<JWTConfiguration>(opt => builder.Configuration.GetSection("Jwt").Bind(opt));
+            //builder.Services.Configure<JWTConfiguration>(opt => builder.Configuration.GetSection("Jwt").Bind(opt));
 
-            builder.Services.AddInfrastructure(builder.Configuration);
-            builder.Services.AddInitialSeedData();
-            builder.Services.AddValidators();
-            builder.Services.AddServices();
+            //builder.Services.AddInfrastructure(builder.Configuration);
+            //builder.Services.AddInitialSeedData();
+            //builder.Services.AddValidators();
+            //builder.Services.AddServices();
 
             builder.Host.UseSerilog((context, services, configuration) => configuration
             .ReadFrom.Configuration(context.Configuration)
@@ -134,7 +134,7 @@ namespace Financials.API
                 options.RoutePrefix = string.Empty;
             });
 
-            SeedUserRoles(app);
+            //SeedUserRoles(app);
 
             app.UseAuthorization();
 
