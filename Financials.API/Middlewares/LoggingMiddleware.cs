@@ -1,5 +1,8 @@
-﻿using Serilog;
+﻿using Financials.Services.RequestsResponses.Base;
+using Newtonsoft.Json;
+using Serilog;
 using Serilog.Events;
+using System.Text;
 
 namespace Financials.API.Middlewares
 {
@@ -20,7 +23,6 @@ namespace Financials.API.Middlewares
                 await _next(context);
                 return;
             }
-            Log.Information("Requisição HTTP iniciada: {Method} {Path}", context.Request.Method, context.Request.Path);
 
             try
             {
@@ -40,16 +42,18 @@ namespace Financials.API.Middlewares
                 var logLevel = statusCode >= 400 ? LogEventLevel.Error : LogEventLevel.Information;
 
                 context.Response.Body.Seek(0, SeekOrigin.Begin);
-                var text = await new StreamReader(context.Response.Body).ReadToEndAsync();
-                
+                var text = await new StreamReader(context.Response.Body, Encoding.UTF8).ReadToEndAsync();
+                var responseObj = JsonConvert.DeserializeObject<ApplicationResponse<string>>(text);
+                var errorMessage = responseObj.Valid ? null : responseObj.Error.CustomMessage;
 
-                Log.Write(logLevel, "Requisição HTTP completada: {Method} {Path} com status {StatusCode}, IP: {IP},Body:{Body},User: {User}",
+                Log.Write(logLevel, "Requisição HTTP completada: {Method} {Path} com status {StatusCode}, IP: {IP},Body:{Body},User: {User},Error: {errorMessage},",
                 context.Request.Method,
                 context.Request.Path,
                 statusCode,
                 context.Connection.RemoteIpAddress.ToString(),
                 text,
-                context.User?.Identity?.Name ?? GetRandomName());
+                context.User?.Identity?.Name ?? GetRandomName(),
+                errorMessage);
 
                 context.Response.Body.Seek(0, SeekOrigin.Begin);
                 await responseBody.CopyToAsync(originalBodyStream);

@@ -19,7 +19,7 @@ namespace Financials.API.Controllers.v1._0
         public ActionResult<ApplicationResponse<string>> Ping400()
         {
             var response = new ApplicationResponse<string>();
-            response.AddError(ResponseErrorType.ValidationError,"Erro ao efetuar ping");
+            response.AddError(ResponseErrorType.ValidationError,"Requisição inválida");
             return this.GetResponse(response);
         }
 
@@ -63,7 +63,7 @@ namespace Financials.API.Controllers.v1._0
         public ActionResult<ApplicationResponse<string>> Ping403()
         {
             var response = new ApplicationResponse<string>();
-            response.AddError(ResponseErrorType.Forbidden, "Erro ao efetuar ping");
+            response.AddError(ResponseErrorType.Forbidden, "Usuário não autorizado");
             return this.GetResponse(response);
         }
 
@@ -74,7 +74,7 @@ namespace Financials.API.Controllers.v1._0
         public ActionResult<ApplicationResponse<string>> Ping401()
         {
             var response = new ApplicationResponse<string>();
-            response.AddError((ResponseErrorType)401, "Unauthorized");
+            response.AddError((ResponseErrorType)401, "Usuário não autenticado");
             return Unauthorized(response);
         }
     }

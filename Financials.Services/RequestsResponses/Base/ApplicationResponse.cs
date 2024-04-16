@@ -1,16 +1,20 @@
 ﻿using FluentValidation.Results;
 using Microsoft.AspNetCore.Identity;
+using Newtonsoft.Json;
 
 namespace Financials.Services.RequestsResponses.Base
 {
     public sealed class ApplicationResponse<T> where T : class
     {
+        [JsonProperty("valid")]
         public bool Valid
         {
             get { return this.Error == null; }
         }
+        [JsonProperty("error")]
         public ResponseError Error { get; private set; }
 
+        [JsonProperty("data")]
         public T Data { get; set; } = null;
         public void AddError(List<ValidationFailure> fluentValidations)
         {
