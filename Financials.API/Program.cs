@@ -1,21 +1,8 @@
-
-using Financials.Core.Entity;
-using Financials.Infrastructure;
-using Financials.Infrastructure.Configuraton;
-using Financials.Infrastructure.Context;
-using Financials.Infrastructure.Repositorio;
-using Microsoft.AspNetCore.Identity;
+using Financials.Infrastructure.Seeds;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ApiExplorer;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using System.Reflection;
-using Financials.Services;
-using Financials.Infrastructure.Seeds;
-using Financials.API.Middlewares;
-using Serilog;
-using Serilog.Events;
-using Serilog.Sinks.Elasticsearch;
 
 namespace Financials.API
 {
@@ -93,22 +80,7 @@ namespace Financials.API
             //builder.Services.AddValidators();
             //builder.Services.AddServices();
 
-            builder.Host.UseSerilog((context, services, configuration) => configuration
-            .ReadFrom.Configuration(context.Configuration)
-            .MinimumLevel.Information() // Define o nível mínimo global
-            .MinimumLevel.Override("Microsoft", LogEventLevel.Warning) // Suprime a maioria dos logs de frameworks/componentes externos
-            .MinimumLevel.Override("System", LogEventLevel.Warning)
-            .MinimumLevel.Override("MinhaAplicacao.API", LogEventLevel.Information) // Ajusta para o seu namespace
-            .WriteTo.Console()
-            .WriteTo.Elasticsearch(new ElasticsearchSinkOptions(new Uri("http://localhost:9200"))
-            {
-                AutoRegisterTemplate = true,
-                IndexFormat = "gow-academy-logs-{0:yyyy.MM}"
-            }));
-
             var app = builder.Build();
-
-            app.UseMiddleware<LoggingMiddleware>();
 
             app.UseCors(builder =>
             {
