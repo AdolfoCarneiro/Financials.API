@@ -4,13 +4,8 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Financials.Infrastructure.Context
 {
-    public class FinancialsDbContext:  IdentityDbContext<ApplicationUser>
+    public class FinancialsDbContext(DbContextOptions<FinancialsDbContext> options) :  IdentityDbContext<ApplicationUser>(options)
     {
-        public FinancialsDbContext(DbContextOptions<FinancialsDbContext> options) : base(options)
-        {
-            
-        }
-
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
