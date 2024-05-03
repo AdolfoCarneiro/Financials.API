@@ -15,18 +15,18 @@ namespace Financials.API.Controllers.v1._0
     {
         private readonly CriarUsuario _criarUsuario;
         private readonly Login _login;
-        private readonly RedefinirSenha _redefinirSenha;
+        //private readonly RedefinirSenha _redefinirSenha;
         private readonly RecuperacaoSenha _recuperacaoSenha;
 
         public AccountController(
             CriarUsuario criarUsuario,
             Login login,
-            RedefinirSenha redefinirSenha,
+            //RedefinirSenha redefinirSenha,
             RecuperacaoSenha recuperacaoSenha)
         {
             _criarUsuario = criarUsuario;
             _login = login;
-            _redefinirSenha = redefinirSenha;
+            //_redefinirSenha = redefinirSenha;
             _recuperacaoSenha = recuperacaoSenha;
         }
 
@@ -51,16 +51,16 @@ namespace Financials.API.Controllers.v1._0
             return this.GetResponse(response);
         }
 
-        [HttpPost("esqueciSenha")]
-        [AllowAnonymous]
-        [ProducesResponseType(typeof(ApplicationResponse<object>), (int)HttpStatusCode.OK)]
-        [ProducesResponseType(typeof(ApplicationResponse<object>), (int)HttpStatusCode.BadRequest)]
-        [ProducesResponseType(typeof(ApplicationResponse<object>), (int)HttpStatusCode.InternalServerError)]
-        public async Task<ActionResult<ApplicationResponse<object>>> EmailRedefinirSenha([FromBody] string email)
-        {
-            var response = await _redefinirSenha.Run(email);
-            return this.GetResponse(response);
-        }
+        //[HttpPost("esqueciSenha")]
+        //[AllowAnonymous]
+        //[ProducesResponseType(typeof(ApplicationResponse<object>), (int)HttpStatusCode.OK)]
+        //[ProducesResponseType(typeof(ApplicationResponse<object>), (int)HttpStatusCode.BadRequest)]
+        //[ProducesResponseType(typeof(ApplicationResponse<object>), (int)HttpStatusCode.InternalServerError)]
+        //public async Task<ActionResult<ApplicationResponse<object>>> EmailRedefinirSenha([FromBody] string email)
+        //{
+        //    var response = await _redefinirSenha.Run(email);
+        //    return this.GetResponse(response);
+        //}
 
         [HttpPost("resetSenha")]
         [AllowAnonymous]
