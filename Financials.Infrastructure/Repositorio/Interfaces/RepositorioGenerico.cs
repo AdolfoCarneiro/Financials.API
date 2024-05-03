@@ -1,12 +1,15 @@
 ﻿using Financials.Infrastructure.Context;
+using Financials.Infrastructure.Repositorio.Implementacoes;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage;
 using System.Linq.Expressions;
 
-namespace Financials.Infrastructure.Repositorio
+namespace Financials.Infrastructure.Repositorio.Interfaces
 {
-    public class RepositorioGenerico<T>(FinancialsDbContext dbContext) where T : class
+    public class RepositorioGenerico<T>(FinancialsDbContext dbContext) : IRepositorioGenerico<T> where T : class
     {
         public FinancialsDbContext _dbContext { get; set; } = dbContext;
+        private IDbContextTransaction _transaction;
 
         public List<T> GetAll()
         {
@@ -60,7 +63,7 @@ namespace Financials.Infrastructure.Repositorio
         }
         public async Task RemoveAsync(Guid id)
         {
-            var entidade = await this.GetById(id);
+            var entidade = await GetById(id);
             _dbContext.Set<T>().Remove(entidade);
             await _dbContext.SaveChangesAsync();
         }
@@ -173,6 +176,23 @@ namespace Financials.Infrastructure.Repositorio
                 query = query.Skip(skip).Take(take);
                 return query.AsNoTracking().Select(selector);
             }
+        }
+
+        public async Task BeginTransactionAsync()
+        {
+            _transaction = await _dbContext.Database.BeginTransactionAsync();
+        }
+
+        public async Task CommitTransactionAsync()
+        {
+            await _transaction.CommitAsync();
+            await _transaction.DisposeAsync();
+        }
+
+        public async Task RollbackTransactionAsync()
+        {
+            await _transaction.RollbackAsync();
+            await _transaction.DisposeAsync();
         }
     }
 }

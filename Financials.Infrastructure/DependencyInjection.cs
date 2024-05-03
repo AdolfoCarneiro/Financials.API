@@ -2,24 +2,27 @@
 using Financials.Infrastructure.Configuraton;
 using Financials.Infrastructure.Context;
 using Financials.Infrastructure.Repositorio;
+using Financials.Infrastructure.Repositorio.Interfaces;
 using Financials.Infrastructure.Seeds;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using System.Reflection;
+using System.Security.AccessControl;
 
 namespace Financials.Infrastructure
 {
     public static class DependencyInjection
     {
-        public static IServiceCollection AddInfrastructure(this IServiceCollection services,IConfiguration configuration)
+        public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
         {
             var defaultConnectionString = configuration.GetConnectionString("DefaultConnection");
             services.AddDbContext<FinancialsDbContext>(options => options.UseSqlServer(defaultConnectionString));
 
             services.Configure<JWTConfiguration>(opt => configuration.GetSection("Jwt").Bind(opt));
 
-            services.AddScoped<IFInancialsRepositorio, FinancialsRepositorio>();
+            services.AddRepositories();
 
             return services;
         }
@@ -27,6 +30,30 @@ namespace Financials.Infrastructure
         public static IServiceCollection AddInitialSeedData(this IServiceCollection services)
         {
             services.AddScoped<ISeedInitialUserAndRoles, SeedInitialUserAndRoles>();
+            return services;
+        }
+
+        public static IServiceCollection AddRepositories(this IServiceCollection services)
+        {
+            var assembly = Assembly.GetExecutingAssembly();
+            var baseType = typeof(RepositorioGenerico<>);
+
+            var repositoryTypes = assembly.GetTypes()
+            .Where(t => t.Namespace != null && t.Namespace.StartsWith("Financials.Infrastructure.Repositorio")
+                    && t.BaseType != null
+                    && t.BaseType.IsGenericType
+                    && t.BaseType.GetGenericTypeDefinition() == baseType
+            ).ToList();
+
+            foreach (var type in repositoryTypes)
+            {
+                var interfaceType = type.GetInterfaces().FirstOrDefault(i => i.Name == $"I{type.Name}");
+                if (interfaceType != null)
+                {
+                    services.AddScoped(interfaceType, type);
+                }
+            }
+
             return services;
         }
     }
