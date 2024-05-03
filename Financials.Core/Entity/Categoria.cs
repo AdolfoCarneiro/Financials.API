@@ -1,8 +1,10 @@
 ﻿using Financials.Core.Enums;
 using System.ComponentModel.DataAnnotations;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Financials.Core.Entity
 {
+    [ExcludeFromCodeCoverage]
     public class Categoria
     {
         [Key]

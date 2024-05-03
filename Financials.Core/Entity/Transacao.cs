@@ -1,13 +1,16 @@
 ﻿using Financials.Core.Enums;
 using System.ComponentModel.DataAnnotations;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Financials.Core.Entity
 {
+    [ExcludeFromCodeCoverage]
     public class Transacao
     {
         [Key]
         public Guid Id { get; set; }
         public decimal Valor { get; set; }
+        public string Descricao { get; set; }
         public DateTime Data { get; set; }
         public TipoTransacao Tipo { get; set; }
         public Guid? ContaId { get; set; }

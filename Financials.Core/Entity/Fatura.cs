@@ -1,7 +1,9 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Financials.Core.Entity
 {
+    [ExcludeFromCodeCoverage]
     public class Fatura
     {
         [Key]

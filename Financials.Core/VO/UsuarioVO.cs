@@ -1,7 +1,9 @@
 ﻿using Financials.Core.Enums;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Financials.Core.VO
 {
+    [ExcludeFromCodeCoverage]
     public class UsuarioVO
     {
         public Guid Id { get; set; }

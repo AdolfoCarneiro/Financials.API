@@ -1,5 +1,8 @@
-﻿namespace Financials.Core.VO
+﻿using System.Diagnostics.CodeAnalysis;
+
+namespace Financials.Core.VO
 {
+    [ExcludeFromCodeCoverage]
     public class TokenVO
     {
         public string AccessToken { get; set; }
