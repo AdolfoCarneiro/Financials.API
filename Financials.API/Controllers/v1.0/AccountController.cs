@@ -15,13 +15,19 @@ namespace Financials.API.Controllers.v1._0
     {
         private readonly CriarUsuario _criarUsuario;
         private readonly Login _login;
+        private readonly RedefinirSenha _redefinirSenha;
+        private readonly RecuperacaoSenha _recuperacaoSenha;
 
         public AccountController(
             CriarUsuario criarUsuario,
-            Login login)
+            Login login,
+            RedefinirSenha redefinirSenha,
+            RecuperacaoSenha recuperacaoSenha)
         {
             _criarUsuario = criarUsuario;
             _login = login;
+            _redefinirSenha = redefinirSenha;
+            _recuperacaoSenha = recuperacaoSenha;
         }
 
         [HttpPost]
@@ -42,6 +48,28 @@ namespace Financials.API.Controllers.v1._0
         public async Task<ActionResult<ApplicationResponse<UserLoginResponse>>> Login([FromBody] LoginRequest request)
         {
             var response = await _login.Run(request);
+            return this.GetResponse(response);
+        }
+
+        [HttpPost("esqueciSenha")]
+        [AllowAnonymous]
+        [ProducesResponseType(typeof(ApplicationResponse<object>), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(ApplicationResponse<object>), (int)HttpStatusCode.BadRequest)]
+        [ProducesResponseType(typeof(ApplicationResponse<object>), (int)HttpStatusCode.InternalServerError)]
+        public async Task<ActionResult<ApplicationResponse<object>>> EmailRedefinirSenha([FromBody] string email)
+        {
+            var response = await _redefinirSenha.Run(email);
+            return this.GetResponse(response);
+        }
+
+        [HttpPost("resetSenha")]
+        [AllowAnonymous]
+        [ProducesResponseType(typeof(ApplicationResponse<object>), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(ApplicationResponse<object>), (int)HttpStatusCode.BadRequest)]
+        [ProducesResponseType(typeof(ApplicationResponse<object>), (int)HttpStatusCode.InternalServerError)]
+        public async Task<ActionResult<ApplicationResponse<object>>> RedefinirSenha([FromBody] RedefinirSenhaRequest request)
+        {
+            var response = await _recuperacaoSenha.Run(request);
             return this.GetResponse(response);
         }
     }
