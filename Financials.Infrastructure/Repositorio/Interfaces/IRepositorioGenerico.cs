@@ -1,7 +1,7 @@
 ﻿using Financials.Infrastructure.Context;
 using System.Linq.Expressions;
 
-namespace Financials.Infrastructure.Repositorio.Implementacoes
+namespace Financials.Infrastructure.Repositorio.Interfaces
 {
     public interface IRepositorioGenerico<T> where T : class
     {

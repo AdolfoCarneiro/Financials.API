@@ -7,6 +7,7 @@ namespace Financials.Infrastructure.Context
 {
     public class FinancialsDbContext(DbContextOptions<FinancialsDbContext> options) :  IdentityDbContext<ApplicationUser>(options)
     {
+
         public DbSet<CartaoCredito> CartaoCredito { get; set; }
         public DbSet<Categoria> Categoria { get; set; }
         public DbSet<Conta> Conta { get; set; }

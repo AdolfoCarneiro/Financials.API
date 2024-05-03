@@ -1,10 +1,10 @@
 ﻿using Financials.Infrastructure.Context;
-using Financials.Infrastructure.Repositorio.Implementacoes;
+using Financials.Infrastructure.Repositorio.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
 using System.Linq.Expressions;
 
-namespace Financials.Infrastructure.Repositorio.Interfaces
+namespace Financials.Infrastructure.Repositorio.Implementacoes
 {
     public class RepositorioGenerico<T>(FinancialsDbContext dbContext) : IRepositorioGenerico<T> where T : class
     {
