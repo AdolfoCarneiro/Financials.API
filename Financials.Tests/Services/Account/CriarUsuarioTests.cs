@@ -9,6 +9,7 @@ using Moq;
 namespace Financials.Tests.Services.Account
 {
     [TestFixture]
+    [Category("UnitTests")]
     public class CriarUsuarioTests
     {
         private Mock<UserManager<ApplicationUser>> _userManagerMock;
