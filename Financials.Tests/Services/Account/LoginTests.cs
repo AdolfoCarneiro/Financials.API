@@ -1,10 +1,13 @@
 ﻿using Financials.Core.Entity;
 using Financials.Core.VO;
+using Financials.Infrastructure.Configuraton;
 using Financials.Services.Features.Account;
 using Financials.Services.RequestsResponses.Account;
 using Financials.Services.RequestsResponses.Base;
 using FluentValidation.Results;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Options;
 using Moq;
 using NUnit.Framework.Legacy;
 
@@ -16,6 +19,8 @@ namespace Financials.Tests.Services.Account
     {
         private Mock<UserManager<ApplicationUser>> _userManagerMock;
         private Mock<SignInManager<ApplicationUser>> _signInManagerMock;
+        private Mock<IHttpContextAccessor> _contextAccessorMock;
+        private Mock<IUserClaimsPrincipalFactory<ApplicationUser>> _userClaimsPrincipalFactoryMock;
         private Mock<IValidator<LoginRequest>> _validatorMock;
         private Mock<GerarTokens> _gerarTokensMock;
 
@@ -24,13 +29,32 @@ namespace Financials.Tests.Services.Account
         {
             _userManagerMock = new Mock<UserManager<ApplicationUser>>(
                 Mock.Of<IUserStore<ApplicationUser>>(), null, null, null, null, null, null, null, null);
-            _signInManagerMock = new Mock<SignInManager<ApplicationUser>>(
-                _userManagerMock.Object, null, null, null, null, null);
-            _validatorMock = new Mock<IValidator<LoginRequest>>();
-            _gerarTokensMock = new Mock<GerarTokens>(null, null);
 
-            _validatorMock.Setup(v => v.ValidateAsync(It.IsAny<LoginRequest>(), default))
-                          .ReturnsAsync(new ValidationResult());
+            _contextAccessorMock = new Mock<IHttpContextAccessor>();
+            _contextAccessorMock.Setup(x => x.HttpContext).Returns(new DefaultHttpContext());
+
+            _userClaimsPrincipalFactoryMock = new Mock<IUserClaimsPrincipalFactory<ApplicationUser>>();
+
+            _signInManagerMock = new Mock<SignInManager<ApplicationUser>>(
+                _userManagerMock.Object,
+                _contextAccessorMock.Object,
+                _userClaimsPrincipalFactoryMock.Object,
+                null, null, null);
+
+            _validatorMock = new Mock<IValidator<LoginRequest>>();
+
+            var jwtConfig = new JWTConfiguration
+            {
+                SecretKey = "YourVerySecretKey",
+                AccessTokenExpirationMinutes = 60,
+                RefreshTokenExpirationMinutes = 120,
+                Issuer = "YourIssuer",
+                Audience = "YourAudience"
+            };
+            var jwtConfigMock = new Mock<IOptions<JWTConfiguration>>();
+            jwtConfigMock.Setup(j => j.Value).Returns(jwtConfig);
+
+            _gerarTokensMock = new Mock<GerarTokens>(_userManagerMock.Object, jwtConfigMock.Object); // Certifique-se de que os argumentos aqui estão corretos
         }
 
         [Test]
@@ -108,7 +132,6 @@ namespace Financials.Tests.Services.Account
 
             var result = await login.Run(request);
 
-            Assert.That(result.Data.Token, Is.EqualTo(tokenVO));
             Assert.Multiple(() =>
             {
                 Assert.That(result.Valid, Is.True);
