@@ -127,6 +127,7 @@ namespace Financials.Tests.Services.Account
             _signInManagerMock.Setup(sm => sm.PasswordSignInAsync(user, request.Senha, false, false))
                               .ReturnsAsync(SignInResult.Success);
             _gerarTokensMock.Setup(gt => gt.Run(user)).ReturnsAsync(tokenVO);
+            _validatorMock.Setup(v => v.ValidateAsync(request, It.IsAny<CancellationToken>())).ReturnsAsync(new ValidationResult());
 
             var login = new Login(_userManagerMock.Object, _signInManagerMock.Object, _validatorMock.Object, _gerarTokensMock.Object);
 

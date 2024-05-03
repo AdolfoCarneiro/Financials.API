@@ -17,7 +17,7 @@ namespace Financials.Services.Features.Account
         private readonly UserManager<ApplicationUser> _userManager = userManager;
         private readonly JWTConfiguration _configuration = configuration.Value;
 
-        public async Task<TokenVO> Run(ApplicationUser user)
+        public virtual async Task<TokenVO> Run(ApplicationUser user)
         {
             var claims = new List<Claim>(){
                 new Claim(JwtRegisteredClaimNames.Jti, user.Id.ToString()),
