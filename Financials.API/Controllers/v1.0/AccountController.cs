@@ -16,18 +16,18 @@ namespace Financials.API.Controllers.v1._0
         private readonly CriarUsuario _criarUsuario;
         private readonly Login _login;
         //private readonly RedefinirSenha _redefinirSenha;
-        private readonly RecuperacaoSenha _recuperacaoSenha;
+        private readonly RedefinirSenha _redefinirSenha;
 
         public AccountController(
             CriarUsuario criarUsuario,
             Login login,
             //RedefinirSenha redefinirSenha,
-            RecuperacaoSenha recuperacaoSenha)
+            RedefinirSenha redefinirSenha)
         {
             _criarUsuario = criarUsuario;
             _login = login;
             //_redefinirSenha = redefinirSenha;
-            _recuperacaoSenha = recuperacaoSenha;
+            _redefinirSenha = redefinirSenha;
         }
 
         [HttpPost]
@@ -69,7 +69,7 @@ namespace Financials.API.Controllers.v1._0
         [ProducesResponseType(typeof(ApplicationResponse<object>), (int)HttpStatusCode.InternalServerError)]
         public async Task<ActionResult<ApplicationResponse<object>>> RedefinirSenha([FromBody] RedefinirSenhaRequest request)
         {
-            var response = await _recuperacaoSenha.Run(request);
+            var response = await _redefinirSenha.Run(request);
             return this.GetResponse(response);
         }
     }

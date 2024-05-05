@@ -8,15 +8,10 @@ using System.Text;
 
 namespace Financials.Services.Features.Account
 {
-    public class RecuperacaoSenha
+    public class RedefinirSenha(IValidator<RedefinirSenhaRequest> validator, UserManager<ApplicationUser> userManager)
     {
-        private readonly IValidator<RedefinirSenhaRequest> _validator;
-        private readonly UserManager<ApplicationUser> _userManager;
-        public RecuperacaoSenha(IValidator<RedefinirSenhaRequest> validator, UserManager<ApplicationUser> userManager)
-        {
-            _validator = validator;
-            _userManager = userManager;
-        }
+        private readonly IValidator<RedefinirSenhaRequest> _validator = validator;
+        private readonly UserManager<ApplicationUser> _userManager = userManager;
 
         public async Task<ApplicationResponse<object>> Run(RedefinirSenhaRequest request)
         {
@@ -30,9 +25,6 @@ namespace Financials.Services.Features.Account
                     return response;
                 }
 
-                byte[] tokenBytes = WebEncoders.Base64UrlDecode(request.Token);
-                string tokenDecodificado = Encoding.UTF8.GetString(tokenBytes);
-
                 var usuario = await _userManager.FindByIdAsync(request.UsuarioId.ToString());
                 if (usuario is null)
                 {
@@ -40,7 +32,7 @@ namespace Financials.Services.Features.Account
                     return response;
                 }
 
-                var result = await _userManager.ResetPasswordAsync(usuario, tokenDecodificado,request.NovaSenha);
+                var result = await _userManager.ResetPasswordAsync(usuario, request.Token, request.NovaSenha);
                 if (!result.Succeeded)
                 {
                     response.AddError(ResponseErrorType.InternalError, "Erro ao redefinir senha do usuário");

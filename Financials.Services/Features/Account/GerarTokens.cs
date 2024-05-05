@@ -20,7 +20,7 @@ namespace Financials.Services.Features.Account
         public virtual async Task<TokenVO> Run(ApplicationUser user)
         {
             var claims = new List<Claim>(){
-                new Claim(JwtRegisteredClaimNames.Jti, user.Id.ToString()),
+                new(JwtRegisteredClaimNames.Jti, user.Id.ToString()),
             };
             var userRoles = await _userManager.GetRolesAsync(user);
 

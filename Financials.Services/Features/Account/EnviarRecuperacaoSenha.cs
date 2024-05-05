@@ -8,11 +8,11 @@
 
 //namespace Financials.Services.Features.Account
 //{
-//    public class RedefinirSenha
+//    public class EnviarRecuperacaoSenha
 //    {
 //        private readonly UserManager<ApplicationUser> _userManager;
 //        private readonly ServicoEmail _servicoEmail;
-//        public RedefinirSenha(UserManager<ApplicationUser> userManager, ServicoEmail servicoEmail) 
+//        public EnviarRecuperacaoSenha(UserManager<ApplicationUser> userManager, ServicoEmail servicoEmail) 
 //        {
 //            _userManager = userManager;
 //            _servicoEmail = servicoEmail;

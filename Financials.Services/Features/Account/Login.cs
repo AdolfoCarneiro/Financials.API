@@ -38,6 +38,7 @@ namespace Financials.Services.Features.Account
                 if (!loginResult.Succeeded)
                 {
                     response.AddError(ResponseErrorType.InternalError, "Erro ao realizar login");
+                    return response;
                 }
 
                 var token = await _gerarTokens.Run(user);
