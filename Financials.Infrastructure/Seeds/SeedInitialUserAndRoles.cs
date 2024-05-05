@@ -2,9 +2,11 @@
 using Financials.Core.Enums;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Financials.Infrastructure.Seeds
 {
+    [ExcludeFromCodeCoverage]
     public class SeedInitialUserAndRoles(
         UserManager<ApplicationUser> userManager,
         RoleManager<IdentityRole> roleManager) : ISeedInitialUserAndRoles

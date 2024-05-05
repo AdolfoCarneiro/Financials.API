@@ -1,10 +1,12 @@
 ﻿using Financials.Core.Entity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using System.Diagnostics.CodeAnalysis;
 using System.Reflection.Emit;
 
 namespace Financials.Infrastructure.Context
 {
+    [ExcludeFromCodeCoverage]
     public class FinancialsDbContext(DbContextOptions<FinancialsDbContext> options) :  IdentityDbContext<ApplicationUser>(options)
     {
 
