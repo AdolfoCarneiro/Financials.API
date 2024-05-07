@@ -20,7 +20,13 @@ namespace Financials.Tests.Services.Account.Validators
         {
             var request = new UsuarioRequest()
             {
-                Nome = nome
+                Nome = nome,
+                DataNascimento = DateTime.Now,
+                Email = "email@email.com",
+                Id = Guid.NewGuid(),
+                Roles = ["teste"],
+                Senha = "Pass123$",
+                Telefone = "312312444"
             };
 
             var validation = _validator.TestValidate(request);
@@ -34,7 +40,13 @@ namespace Financials.Tests.Services.Account.Validators
         {
             var request = new UsuarioRequest()
             {
-                Senha = senha
+                Nome = "Fulano",
+                DataNascimento = DateTime.Now,
+                Email = "email@email.com",
+                Id = Guid.NewGuid(),
+                Roles = ["teste"],
+                Senha = senha,
+                Telefone = "312312444"
             };
 
             var validation = _validator.TestValidate(request);
@@ -48,7 +60,13 @@ namespace Financials.Tests.Services.Account.Validators
         {
             var request = new UsuarioRequest()
             {
-                Email = email
+                Nome = "Fulano",
+                DataNascimento = DateTime.Now,
+                Email = email,
+                Id = Guid.NewGuid(),
+                Roles = ["teste"],
+                Senha = "Pass123$",
+                Telefone = "312312444"
             };
 
             var validation = _validator.TestValidate(request);

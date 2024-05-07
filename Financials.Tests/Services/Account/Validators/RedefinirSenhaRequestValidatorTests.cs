@@ -18,7 +18,11 @@ namespace Financials.Tests.Services.Account.Validators
         [Test]
         public void Should_have_error_when_UsuarioId_is_default()
         {
-            var request = new RedefinirSenhaRequest { UsuarioId = Guid.Empty };
+            var request = new RedefinirSenhaRequest { 
+                UsuarioId = Guid.Empty,
+                NovaSenha = "",
+                Token = "dasdsad",
+            };
             var result = _validator.TestValidate(request);
             result.ShouldHaveValidationErrorFor(x => x.UsuarioId).WithErrorMessage("O campo Id é obrigatório");
         }
@@ -26,7 +30,11 @@ namespace Financials.Tests.Services.Account.Validators
         [Test]
         public void Should_have_error_when_NovaSenha_is_empty()
         {
-            var request = new RedefinirSenhaRequest { NovaSenha = "" };
+            var request = new RedefinirSenhaRequest { 
+                NovaSenha = "",
+                Token = "dasdsad",
+                UsuarioId = Guid.NewGuid(),
+            };
             var result = _validator.TestValidate(request);
             result.ShouldHaveValidationErrorFor(x => x.NovaSenha).WithErrorMessage("O campo Senha é obrigatório");
         }
@@ -34,7 +42,11 @@ namespace Financials.Tests.Services.Account.Validators
         [Test]
         public void Should_have_error_when_NovaSenha_is_too_short()
         {
-            var request = new RedefinirSenhaRequest { NovaSenha = "Abc1!" };
+            var request = new RedefinirSenhaRequest {
+                NovaSenha = "Abc1!",
+                Token = "dasdsad",
+                UsuarioId = Guid.NewGuid(),
+            };
             var result = _validator.TestValidate(request);
             result.ShouldHaveValidationErrorFor(x => x.NovaSenha).WithErrorMessage("O campo Senha deve possuir pelo menos 8 caracteres");
         }
@@ -42,7 +54,11 @@ namespace Financials.Tests.Services.Account.Validators
         [Test]
         public void Should_have_error_when_NovaSenha_is_too_long()
         {
-            var request = new RedefinirSenhaRequest { NovaSenha = "Abc1!234567890123456789" };
+            var request = new RedefinirSenhaRequest { 
+                NovaSenha = "Abc1!234567890123456789",
+                Token = "dasdsad",
+                UsuarioId = Guid.NewGuid(),
+            };
             var result = _validator.TestValidate(request);
             result.ShouldHaveValidationErrorFor(x => x.NovaSenha).WithErrorMessage("O campo Senha deve possuir no máximo 16 caracteres.");
         }
@@ -50,7 +66,11 @@ namespace Financials.Tests.Services.Account.Validators
         [Test]
         public void Should_have_error_when_NovaSenha_lacks_uppercase()
         {
-            var request = new RedefinirSenhaRequest { NovaSenha = "abc1!2345" };
+            var request = new RedefinirSenhaRequest { 
+                NovaSenha = "abc1!2345",
+                Token = "dasdsad",
+                UsuarioId = Guid.NewGuid(),
+            };
             var result = _validator.TestValidate(request);
             result.ShouldHaveValidationErrorFor(x => x.NovaSenha).WithErrorMessage("O campo Senha deve possuir pelo menos uma letra maiúscula.");
         }
@@ -58,7 +78,11 @@ namespace Financials.Tests.Services.Account.Validators
         [Test]
         public void Should_have_error_when_NovaSenha_lacks_lowercase()
         {
-            var request = new RedefinirSenhaRequest { NovaSenha = "ABC1!2345" };
+            var request = new RedefinirSenhaRequest { 
+                NovaSenha = "ABC1!2345",
+                Token = "dasdsad",
+                UsuarioId = Guid.NewGuid(),
+            };
             var result = _validator.TestValidate(request);
             result.ShouldHaveValidationErrorFor(x => x.NovaSenha).WithErrorMessage("O campo Senha deve possuir pelo menos uma letra minúscula.");
         }
@@ -66,7 +90,11 @@ namespace Financials.Tests.Services.Account.Validators
         [Test]
         public void Should_have_error_when_NovaSenha_lacks_digit()
         {
-            var request = new RedefinirSenhaRequest { NovaSenha = "ABCd!efgh" };
+            var request = new RedefinirSenhaRequest { 
+                NovaSenha = "ABCd!efgh",
+                Token = "dasdsad",
+                UsuarioId = Guid.NewGuid(),
+            };
             var result = _validator.TestValidate(request);
             result.ShouldHaveValidationErrorFor(x => x.NovaSenha).WithErrorMessage("O campo Senha deve possuir pelo menos um número.");
         }
@@ -74,7 +102,11 @@ namespace Financials.Tests.Services.Account.Validators
         [Test]
         public void Should_have_error_when_NovaSenha_lacks_special_character()
         {
-            var request = new RedefinirSenhaRequest { NovaSenha = "ABCd12345" };
+            var request = new RedefinirSenhaRequest { 
+                NovaSenha = "ABCd12345",
+                Token = "dasdsad",
+                UsuarioId = Guid.NewGuid(),
+            };
             var result = _validator.TestValidate(request);
             result.ShouldHaveValidationErrorFor(x => x.NovaSenha).WithErrorMessage("O campo Senha deve possuir pelo menos um caractere especial.");
         }
@@ -82,7 +114,11 @@ namespace Financials.Tests.Services.Account.Validators
         [Test]
         public void Should_have_error_when_Token_is_empty()
         {
-            var request = new RedefinirSenhaRequest { Token = "" };
+            var request = new RedefinirSenhaRequest { 
+                Token = "",
+                NovaSenha = "",
+                UsuarioId = Guid.NewGuid(),
+            };
             var result = _validator.TestValidate(request);
             result.ShouldHaveValidationErrorFor(x => x.Token).WithErrorMessage("O campo Token é obrigatório");
         }

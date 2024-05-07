@@ -20,7 +20,8 @@ namespace Financials.Tests.Services.Account.Validators
         {
             var request = new LoginRequest()
             {
-                Usuario = usuario
+                Usuario = usuario,
+                Senha = "Pass123$"
             };
 
             var validation = _validator.TestValidate(request);
@@ -33,6 +34,7 @@ namespace Financials.Tests.Services.Account.Validators
         {
             var request = new LoginRequest()
             {
+                Usuario = "default@email.com",
                 Senha = senha
             };
 
