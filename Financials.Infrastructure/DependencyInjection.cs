@@ -23,7 +23,6 @@ namespace Financials.Infrastructure
             services.AddDbContext<FinancialsDbContext>(options =>
             {
                 options.UseSqlServer(defaultConnectionString);
-                options.UseLazyLoadingProxies();
             });
 
             services.Configure<JWTConfiguration>(opt => configuration.GetSection("Jwt").Bind(opt));

@@ -1,5 +1,8 @@
-﻿namespace Financials.Services.RequestsResponses.Account
+﻿using System.Diagnostics.CodeAnalysis;
+
+namespace Financials.Services.RequestsResponses.Account
 {
+    [ExcludeFromCodeCoverage]
     public class UsuarioResponse
     {
         public Guid Id { get; set; }
