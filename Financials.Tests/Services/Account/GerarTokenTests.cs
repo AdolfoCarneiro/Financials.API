@@ -1,6 +1,8 @@
-﻿using Financials.Core.Entity;
+﻿using Azure.Core;
+using Financials.Core.Entity;
 using Financials.Infrastructure.Configuraton;
 using Financials.Services.Features.Account;
+using Financials.Services.RequestsResponses.Account;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
@@ -36,13 +38,13 @@ namespace Financials.Tests.Services.Account
         }
 
         [Test]
-        public async Task Run_Should_Include_Required_Claims_In_Tokens()
+        public async Task Handle_Should_Include_Required_Claims_In_Tokens()
         {
-            var user = new ApplicationUser { Id = "user-id" };
+            var request = new GenerateTokenRequest() { User = new ApplicationUser { Id = "user-id" } };
             _userManagerMock.Setup(um => um.GetRolesAsync(It.IsAny<ApplicationUser>())).ReturnsAsync(new List<string> { "Admin" });
 
             var service = new GerarTokens(_userManagerMock.Object, _jwtConfigMock.Object);
-            var result = await service.Run(user);
+            var result = await service.Handle(request);
 
             var handler = new JwtSecurityTokenHandler();
             var accessToken = handler.ReadJwtToken(result.AccessToken);
@@ -50,20 +52,20 @@ namespace Financials.Tests.Services.Account
 
             Assert.Multiple(() =>
             {
-                Assert.That(accessToken.Claims.FirstOrDefault(c => c.Type == JwtRegisteredClaimNames.Jti && c.Value == user.Id), Is.Not.Null);
+                Assert.That(accessToken.Claims.FirstOrDefault(c => c.Type == JwtRegisteredClaimNames.Jti && c.Value == request.User.Id), Is.Not.Null);
                 Assert.That(accessToken.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role && c.Value == "Admin"), Is.Not.Null);
-                Assert.That(refreshToken.Claims.FirstOrDefault(c => c.Type == JwtRegisteredClaimNames.Jti && c.Value == user.Id), Is.Not.Null);
+                Assert.That(refreshToken.Claims.FirstOrDefault(c => c.Type == JwtRegisteredClaimNames.Jti && c.Value == request.User.Id), Is.Not.Null);
             });
         }
 
         [Test]
-        public async Task Run_Should_Sign_Tokens_With_Correct_Key_And_Algorithm()
+        public async Task Handle_Should_Sign_Tokens_With_Correct_Key_And_Algorithm()
         {
-            var user = new ApplicationUser { Id = "user-id" };
+            var request = new GenerateTokenRequest() { User = new ApplicationUser { Id = "user-id" } };
             _userManagerMock.Setup(um => um.GetRolesAsync(It.IsAny<ApplicationUser>())).ReturnsAsync(new List<string>());
 
             var service = new GerarTokens(_userManagerMock.Object, _jwtConfigMock.Object);
-            var result = await service.Run(user);
+            var result = await service.Handle(request);
 
             var handler = new JwtSecurityTokenHandler();
             var token = handler.ReadJwtToken(result.AccessToken);
@@ -86,26 +88,26 @@ namespace Financials.Tests.Services.Account
         }
 
         [Test]
-        public async Task Run_Should_Handle_Exceptions_When_Getting_Roles_Fails()
+        public async Task Handle_Should_Handle_Exceptions_When_Getting_Roles_Fails()
         {
-            var user = new ApplicationUser { Id = "user-id" };
+            var request = new GenerateTokenRequest() { User = new ApplicationUser { Id = "user-id" } };
             _userManagerMock.Setup(um => um.GetRolesAsync(It.IsAny<ApplicationUser>()))
                              .ThrowsAsync(new Exception("Failed to fetch roles"));
 
             var service = new GerarTokens(_userManagerMock.Object, _jwtConfigMock.Object);
 
-            Assert.ThrowsAsync<Exception>(async () => await service.Run(user));
+            Assert.ThrowsAsync<Exception>(async () => await service.Handle(request));
         }
 
         [Test]
-        public async Task Run_Should_Set_Correct_Expiration_Times()
+        public async Task Handle_Should_Set_Correct_Expiration_Times()
         {
-            var user = new ApplicationUser { Id = "user-id" };
+            var request = new GenerateTokenRequest() { User = new ApplicationUser { Id = "user-id" } };
             _userManagerMock.Setup(um => um.GetRolesAsync(It.IsAny<ApplicationUser>())).ReturnsAsync(new List<string>());
 
             var service = new GerarTokens(_userManagerMock.Object, _jwtConfigMock.Object);
 
-            var result = await service.Run(user);
+            var result = await service.Handle(request);
             var expectedAccessTokenExpiration = DateTime.UtcNow.AddMinutes(60);
             var expectedRefreshTokenExpiration = DateTime.UtcNow.AddMinutes(120);
 

@@ -24,7 +24,7 @@ namespace Financials.Tests.Services.Account
         }
 
         [Test]
-        public async Task Run_Should_Return_Errors_If_Validation_Fails()
+        public async Task Handle_Should_Return_Errors_If_Validation_Fails()
         {
             var request = new RedefinirSenhaRequest();
             var validationFailures = new List<ValidationFailure>
@@ -37,7 +37,7 @@ namespace Financials.Tests.Services.Account
 
             var redefinirSenha = new RedefinirSenha(_validatorMock.Object, _userManagerMock.Object);
 
-            var result = await redefinirSenha.Run(request);
+            var result = await redefinirSenha.Handle(request);
 
             Assert.Multiple(() =>
             {
@@ -49,7 +49,7 @@ namespace Financials.Tests.Services.Account
         }
 
         [Test]
-        public async Task Run_Should_Return_Error_If_User_Not_Found()
+        public async Task Handle_Should_Return_Error_If_User_Not_Found()
         {
             var request = new RedefinirSenhaRequest { UsuarioId = Guid.NewGuid(), Token = "some-token", NovaSenha = "newPassword123" };
             _validatorMock.Setup(v => v.ValidateAsync(request, default))
@@ -60,7 +60,7 @@ namespace Financials.Tests.Services.Account
 
             var redefinirSenha = new RedefinirSenha(_validatorMock.Object, _userManagerMock.Object);
 
-            var result = await redefinirSenha.Run(request);
+            var result = await redefinirSenha.Handle(request);
 
             Assert.Multiple(() =>
             {
@@ -70,7 +70,7 @@ namespace Financials.Tests.Services.Account
         }
 
         [Test]
-        public async Task Run_Should_Return_Error_If_Password_Reset_Fails()
+        public async Task Handle_Should_Return_Error_If_Password_Reset_Fails()
         {
             var user = new ApplicationUser { Id = "user-id" };
             var request = new RedefinirSenhaRequest { UsuarioId = Guid.NewGuid(), Token = "valid-token", NovaSenha = "newPassword123" };
@@ -85,7 +85,7 @@ namespace Financials.Tests.Services.Account
 
             var redefinirSenha = new RedefinirSenha(_validatorMock.Object, _userManagerMock.Object);
 
-            var result = await redefinirSenha.Run(request);
+            var result = await redefinirSenha.Handle(request);
 
             Assert.Multiple(() =>
             {

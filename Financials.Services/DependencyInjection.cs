@@ -1,4 +1,5 @@
-﻿using FluentValidation;
+﻿using Financials.Services.RequestsResponses.Account;
+using FluentValidation;
 using Microsoft.Extensions.DependencyInjection;
 using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
@@ -9,7 +10,7 @@ namespace Financials.Services
     {
         public static IServiceCollection AddServices(this IServiceCollection services)
         {
-            services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(DependencyInjection).Assembly));
+            services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(LoginRequest).Assembly));
             return services;
         }
 

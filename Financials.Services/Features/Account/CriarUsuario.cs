@@ -23,7 +23,7 @@ namespace Financials.Services.Features.Account
             var response = new ApplicationResponse<UsuarioResponse>();
             try
             {
-                var validate = await _validator.ValidateAsync(request);
+                var validate = await _validator.ValidateAsync(request, cancellationToken);
                 if (!validate.IsValid)
                 {
                     response.AddError(validate.Errors);

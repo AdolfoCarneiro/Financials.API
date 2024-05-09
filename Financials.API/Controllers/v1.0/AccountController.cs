@@ -15,20 +15,10 @@ namespace Financials.API.Controllers.v1._0
     public class AccountController : ControllerBase
     {
         private readonly IMediator _mediator;
-        private readonly Login _login;
-        //private readonly RedefinirSenha _redefinirSenha;
-        private readonly RedefinirSenha _redefinirSenha;
 
-        public AccountController(
-            IMediator mediator,
-            Login login,
-            //RedefinirSenha redefinirSenha,
-            RedefinirSenha redefinirSenha)
+        public AccountController(IMediator mediator)
         {
             _mediator = mediator;
-            _login = login;
-            //_redefinirSenha = redefinirSenha;
-            _redefinirSenha = redefinirSenha;
         }
 
         [HttpPost]
@@ -48,7 +38,7 @@ namespace Financials.API.Controllers.v1._0
         [ProducesResponseType(typeof(UserLoginResponse), (int)HttpStatusCode.InternalServerError)]
         public async Task<ActionResult<ApplicationResponse<UserLoginResponse>>> Login([FromBody] LoginRequest request)
         {
-            var response = await _login.Run(request);
+            var response = await _mediator.Send(request);
             return this.GetResponse(response);
         }
 
@@ -70,7 +60,7 @@ namespace Financials.API.Controllers.v1._0
         [ProducesResponseType(typeof(ApplicationResponse<object>), (int)HttpStatusCode.InternalServerError)]
         public async Task<ActionResult<ApplicationResponse<object>>> RedefinirSenha([FromBody] RedefinirSenhaRequest request)
         {
-            var response = await _redefinirSenha.Run(request);
+            var response = await _mediator.Send(request);
             return this.GetResponse(response);
         }
     }

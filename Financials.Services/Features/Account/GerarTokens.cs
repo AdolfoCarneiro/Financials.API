@@ -1,6 +1,9 @@
 ﻿using Financials.Core.Entity;
 using Financials.Core.VO;
 using Financials.Infrastructure.Configuraton;
+using Financials.Services.RequestsResponses.Account;
+using Financials.Services.RequestsResponses.Base;
+using MediatR;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
@@ -12,13 +15,14 @@ namespace Financials.Services.Features.Account
 {
     public class GerarTokens(
         UserManager<ApplicationUser> userManager,
-        IOptions<JWTConfiguration> configuration)
+        IOptions<JWTConfiguration> configuration) : IRequestHandler<GenerateTokenRequest,TokenVO>
     {
         private readonly UserManager<ApplicationUser> _userManager = userManager;
         private readonly JWTConfiguration _configuration = configuration.Value;
 
-        public virtual async Task<TokenVO> Run(ApplicationUser user)
+        public async Task<TokenVO> Handle(GenerateTokenRequest request,CancellationToken cancellationToken = default)
         {
+            var user = request.User;
             var claims = new List<Claim>(){
                 new(JwtRegisteredClaimNames.Jti, user.Id.ToString()),
             };

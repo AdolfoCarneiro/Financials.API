@@ -2,6 +2,7 @@
 using Financials.Services.RequestsResponses.Account;
 using Financials.Services.RequestsResponses.Base;
 using FluentValidation;
+using MediatR;
 using Microsoft.AspNetCore.Identity;
 
 namespace Financials.Services.Features.Account
@@ -9,14 +10,14 @@ namespace Financials.Services.Features.Account
     public class Login(UserManager<ApplicationUser> userManager,
         SignInManager<ApplicationUser> signInManager,
         IValidator<LoginRequest> validator,
-        GerarTokens gerarTokens)
+        IMediator mediator) : IRequestHandler<LoginRequest, ApplicationResponse<UserLoginResponse>>
     {
         private readonly UserManager<ApplicationUser> _userManager = userManager;
         private readonly SignInManager<ApplicationUser> _signInManager = signInManager;
         private readonly IValidator<LoginRequest> _validator = validator;
-        private readonly GerarTokens _gerarTokens = gerarTokens;
+        private readonly IMediator _mediator = mediator;
 
-        public async Task<ApplicationResponse<UserLoginResponse>> Run(LoginRequest request)
+        public async Task<ApplicationResponse<UserLoginResponse>> Handle(LoginRequest request, CancellationToken cancellationToken = default)
         {
             var response = new ApplicationResponse<UserLoginResponse>();
             try
@@ -40,8 +41,12 @@ namespace Financials.Services.Features.Account
                     response.AddError(ResponseErrorType.InternalError, "Erro ao realizar login");
                     return response;
                 }
+                GenerateTokenRequest generateTokenRequest = new()
+                {
+                    User = user
+                };
 
-                var token = await _gerarTokens.Run(user);
+                var token = await _mediator.Send(generateTokenRequest, cancellationToken);
 
                 UserLoginResponse responseData = new()
                 {
@@ -56,6 +61,6 @@ namespace Financials.Services.Features.Account
             return response;
         }
 
-        
+
     }
 }

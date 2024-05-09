@@ -2,18 +2,20 @@
 using Financials.Services.RequestsResponses.Account;
 using Financials.Services.RequestsResponses.Base;
 using FluentValidation;
+using MediatR;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.WebUtilities;
 using System.Text;
 
 namespace Financials.Services.Features.Account
 {
-    public class RedefinirSenha(IValidator<RedefinirSenhaRequest> validator, UserManager<ApplicationUser> userManager)
+    public class RedefinirSenha(IValidator<RedefinirSenhaRequest> validator, UserManager<ApplicationUser> userManager) : 
+        IRequestHandler<RedefinirSenhaRequest,ApplicationResponse<object>>
     {
         private readonly IValidator<RedefinirSenhaRequest> _validator = validator;
         private readonly UserManager<ApplicationUser> _userManager = userManager;
 
-        public async Task<ApplicationResponse<object>> Run(RedefinirSenhaRequest request)
+        public async Task<ApplicationResponse<object>> Handle(RedefinirSenhaRequest request,CancellationToken cancellationToken = default)
         {
             var response = new ApplicationResponse<object>();
             try
