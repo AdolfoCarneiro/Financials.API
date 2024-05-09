@@ -1,9 +1,8 @@
 ﻿using Financials.Infrastructure.Repositorio.Interfaces;
 using Financials.Services.RequestsResponses.Base;
-using Financials.Services.RequestsResponses;
+using Financials.Services.RequestsResponses.Conta;
 using FluentValidation;
 using Entity = Financials.Core.Entity;
-using Financials.Services.RequestsResponses.Conta;
 
 namespace Financials.Services.Features.Conta
 {
@@ -29,7 +28,10 @@ namespace Financials.Services.Features.Conta
 
                 Entity.Conta conta = new()
                 {
-
+                    Id = request.Id,
+                    Nome = request.Nome,
+                    SaldoInicial = request.SaldoInicial,
+                    Tipo = request.Tipo,
                 };
             }
             catch (Exception ex)

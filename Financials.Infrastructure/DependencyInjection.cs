@@ -1,16 +1,12 @@
-﻿using Financials.Core.Entity;
-using Financials.Infrastructure.Configuraton;
+﻿using Financials.Infrastructure.Configuraton;
 using Financials.Infrastructure.Context;
-using Financials.Infrastructure.Repositorio;
 using Financials.Infrastructure.Repositorio.Implementacoes;
 using Financials.Infrastructure.Seeds;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
-using System.Security.AccessControl;
 
 namespace Financials.Infrastructure
 {
@@ -23,6 +19,7 @@ namespace Financials.Infrastructure
             services.AddDbContext<FinancialsDbContext>(options =>
             {
                 options.UseSqlServer(defaultConnectionString);
+                options.UseLazyLoadingProxies();
             });
 
             services.Configure<JWTConfiguration>(opt => configuration.GetSection("Jwt").Bind(opt));
