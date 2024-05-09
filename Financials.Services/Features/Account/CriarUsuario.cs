@@ -2,21 +2,22 @@
 using Financials.Services.RequestsResponses.Account;
 using Financials.Services.RequestsResponses.Base;
 using FluentValidation;
+using MediatR;
 using Microsoft.AspNetCore.Identity;
 
 namespace Financials.Services.Features.Account
 {
     public class CriarUsuario(
-        UserManager<ApplicationUser> userManager,
-        IValidator<UsuarioRequest> validator,
-        RoleManager<IdentityRole> roleManager
-        )
+            UserManager<ApplicationUser> userManager,
+            IValidator<UsuarioRequest> validator,
+            RoleManager<IdentityRole> roleManager
+        ) : IRequestHandler<UsuarioRequest, ApplicationResponse<UsuarioResponse>>
     {
         private readonly UserManager<ApplicationUser> _userManager = userManager;
         private readonly RoleManager<IdentityRole> _roleManager = roleManager;
         private readonly IValidator<UsuarioRequest> _validator = validator;
 
-        public async Task<ApplicationResponse<UsuarioResponse>> Run(UsuarioRequest request)
+        public async Task<ApplicationResponse<UsuarioResponse>> Handle(UsuarioRequest request, CancellationToken cancellationToken = default)
         {
             ApplicationUser applicationUser = new ApplicationUser();
             var response = new ApplicationResponse<UsuarioResponse>();
@@ -38,14 +39,14 @@ namespace Financials.Services.Features.Account
                     UserName = request.Email,
                 };
 
-                var userResult = await _userManager.CreateAsync(applicationUser,request.Senha);
+                var userResult = await _userManager.CreateAsync(applicationUser, request.Senha);
                 if (!userResult.Succeeded)
                 {
                     response.AddError(userResult.Errors.ToList());
                     return response;
                 }
 
-                foreach(var role in request.Roles)
+                foreach (var role in request.Roles)
                 {
                     var roleExists = await _roleManager.RoleExistsAsync(role);
 

@@ -9,15 +9,7 @@ namespace Financials.Services
     {
         public static IServiceCollection AddServices(this IServiceCollection services)
         {
-            var assembly = Assembly.GetExecutingAssembly();
-            var allTypes = assembly.GetTypes()
-            .Where(p => p.Namespace != null && p.Namespace.Contains("Financials.Services.Features") && p.IsClass && !p.IsAbstract);
-
-            foreach (var type in allTypes)
-            {
-                services.AddScoped(type);
-            }
-
+            services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(DependencyInjection).Assembly));
             return services;
         }
 

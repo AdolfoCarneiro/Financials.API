@@ -1,6 +1,7 @@
 ﻿using Financials.Services.Features.Account;
 using Financials.Services.RequestsResponses.Account;
 using Financials.Services.RequestsResponses.Base;
+using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
@@ -13,18 +14,18 @@ namespace Financials.API.Controllers.v1._0
     [Authorize]
     public class AccountController : ControllerBase
     {
-        private readonly CriarUsuario _criarUsuario;
+        private readonly IMediator _mediator;
         private readonly Login _login;
         //private readonly RedefinirSenha _redefinirSenha;
         private readonly RedefinirSenha _redefinirSenha;
 
         public AccountController(
-            CriarUsuario criarUsuario,
+            IMediator mediator,
             Login login,
             //RedefinirSenha redefinirSenha,
             RedefinirSenha redefinirSenha)
         {
-            _criarUsuario = criarUsuario;
+            _mediator = mediator;
             _login = login;
             //_redefinirSenha = redefinirSenha;
             _redefinirSenha = redefinirSenha;
@@ -36,7 +37,7 @@ namespace Financials.API.Controllers.v1._0
         [ProducesResponseType(typeof(UsuarioResponse), (int)HttpStatusCode.InternalServerError)]
         public async Task<ActionResult<ApplicationResponse<UsuarioResponse>>> CriarUsuario([FromBody] UsuarioRequest request)
         {
-            var response = await _criarUsuario.Run(request);
+            var response = await _mediator.Send(request);
             return this.GetResponse(response);
         }
 

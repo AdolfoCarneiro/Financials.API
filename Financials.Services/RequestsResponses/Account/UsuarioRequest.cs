@@ -1,6 +1,9 @@
-﻿namespace Financials.Services.RequestsResponses.Account
+﻿using Financials.Services.RequestsResponses.Base;
+using MediatR;
+
+namespace Financials.Services.RequestsResponses.Account
 {
-    public class UsuarioRequest
+    public class UsuarioRequest: IRequest<ApplicationResponse<UsuarioResponse>>
     {
 
         public Guid Id { get; set; }

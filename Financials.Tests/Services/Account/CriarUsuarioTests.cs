@@ -25,18 +25,18 @@ namespace Financials.Tests.Services.Account
         }
 
         [Test]
-        public async Task Run_Deve_Retornar_Application_response()
+        public async Task Handle_Deve_Retornar_Application_response()
         {
             var request = new UsuarioRequest();
             var criarUsuario = new CriarUsuario(_userManagerMock.Object,_usuarioRequestValidatorMock.Object,_roleManagerMock.Object);
 
-            var result = await criarUsuario.Run(request);
+            var result = await criarUsuario.Handle(request);
 
             Assert.That(result, Is.InstanceOf<ApplicationResponse<UsuarioResponse>>());
         }
 
         [Test]
-        public async Task Run_Deve_Retornar_Erros_Quando_Request_Invalido()
+        public async Task Handle_Deve_Retornar_Erros_Quando_Request_Invalido()
         {
             var request = new UsuarioRequest();
             _usuarioRequestValidatorMock.Setup(v => v.ValidateAsync(request, It.IsAny<CancellationToken>()))
@@ -44,7 +44,7 @@ namespace Financials.Tests.Services.Account
 
             var criarUsuario = new CriarUsuario(_userManagerMock.Object, _usuarioRequestValidatorMock.Object, _roleManagerMock.Object);
 
-            var result = await criarUsuario.Run(request);
+            var result = await criarUsuario.Handle(request);
 
             Assert.Multiple(() =>
             {
@@ -54,7 +54,7 @@ namespace Financials.Tests.Services.Account
         }
 
         [Test]
-        public async Task Run_Deve_Criar_Usuario_Quando_Request_Valido()
+        public async Task Handle_Deve_Criar_Usuario_Quando_Request_Valido()
         {
             var request = new UsuarioRequest { Email = "email@example.com", Senha = "Password123!", Nome = "Nome", DataNascimento = DateTime.Now, Telefone = "123456789", Roles = ["Role1"] };
 
@@ -72,7 +72,7 @@ namespace Financials.Tests.Services.Account
 
             var criarUsuario = new CriarUsuario(_userManagerMock.Object, _usuarioRequestValidatorMock.Object, _roleManagerMock.Object);
 
-            var result = await criarUsuario.Run(request);
+            var result = await criarUsuario.Handle(request);
 
             Assert.That(result.Valid, Is.True);
             _userManagerMock.Verify(um => um.CreateAsync(It.IsAny<ApplicationUser>(), It.IsAny<string>()), Times.Once);
@@ -81,7 +81,7 @@ namespace Financials.Tests.Services.Account
         }
 
         [Test]
-        public async Task Run_Deve_Retornar_Erros_Quando_UserManager_Falha()
+        public async Task Handle_Deve_Retornar_Erros_Quando_UserManager_Falha()
         {
             var request = new UsuarioRequest { Email = "email@example.com", Senha = "Password123!", Nome = "Nome", DataNascimento = DateTime.Now, Telefone = "123456789", Roles = ["Role1"] };
 
@@ -92,7 +92,7 @@ namespace Financials.Tests.Services.Account
 
             var criarUsuario = new CriarUsuario(_userManagerMock.Object, _usuarioRequestValidatorMock.Object, _roleManagerMock.Object);
 
-            var result = await criarUsuario.Run(request);
+            var result = await criarUsuario.Handle(request);
 
             Assert.Multiple(() =>
             {
@@ -102,7 +102,7 @@ namespace Financials.Tests.Services.Account
         }
 
         [TestCase("NonExistingRole")]
-        public async Task Run_Deve_Retornar_Erro_Quando_Role_Nao_Existe(string role)
+        public async Task Handle_Deve_Retornar_Erro_Quando_Role_Nao_Existe(string role)
         {
             var request = new UsuarioRequest
             {
@@ -123,7 +123,7 @@ namespace Financials.Tests.Services.Account
 
             var criarUsuario = new CriarUsuario(_userManagerMock.Object, _usuarioRequestValidatorMock.Object, _roleManagerMock.Object);
 
-            var result = await criarUsuario.Run(request);
+            var result = await criarUsuario.Handle(request);
 
             Assert.Multiple(() =>
             {
@@ -133,7 +133,7 @@ namespace Financials.Tests.Services.Account
         }
 
         [Test]
-        public async Task Run_Deve_Retornar_Erro_Se_Ocorrer_Excecao()
+        public async Task Handle_Deve_Retornar_Erro_Se_Ocorrer_Excecao()
         {
             var request = new UsuarioRequest {  };
             _usuarioRequestValidatorMock.Setup(v => v.ValidateAsync(request, It.IsAny<CancellationToken>()))
@@ -147,7 +147,7 @@ namespace Financials.Tests.Services.Account
 
             var criarUsuario = new CriarUsuario(_userManagerMock.Object, _usuarioRequestValidatorMock.Object, _roleManagerMock.Object);
 
-            var result = await criarUsuario.Run(request);
+            var result = await criarUsuario.Handle(request);
             Assert.Multiple(() =>
             {
                 Assert.That(result.Valid, Is.False);
@@ -157,7 +157,7 @@ namespace Financials.Tests.Services.Account
         }
 
         [Test]
-        public async Task Run_Deve_Retornar_Erro_Quando_Usuario_Ja_Existir()
+        public async Task Handle_Deve_Retornar_Erro_Quando_Usuario_Ja_Existir()
         {
             var request = new UsuarioRequest {};
             _usuarioRequestValidatorMock.Setup(v => v.ValidateAsync(request, It.IsAny<CancellationToken>()))
@@ -167,7 +167,7 @@ namespace Financials.Tests.Services.Account
 
             var criarUsuario = new CriarUsuario(_userManagerMock.Object, _usuarioRequestValidatorMock.Object, _roleManagerMock.Object);
 
-            var result = await criarUsuario.Run(request);
+            var result = await criarUsuario.Handle(request);
 
             Assert.Multiple(() =>
             {
@@ -177,7 +177,7 @@ namespace Financials.Tests.Services.Account
         }
 
         [Test]
-        public async Task Run_Deve_Adicionar_Usuario_As_Roles_Se_Criacao_For_Sucesso()
+        public async Task Handle_Deve_Adicionar_Usuario_As_Roles_Se_Criacao_For_Sucesso()
         {
             var request = new UsuarioRequest
             {
@@ -199,14 +199,14 @@ namespace Financials.Tests.Services.Account
 
             var criarUsuario = new CriarUsuario(_userManagerMock.Object, _usuarioRequestValidatorMock.Object, _roleManagerMock.Object);
 
-            var result = await criarUsuario.Run(request);
+            var result = await criarUsuario.Handle(request);
 
             Assert.That(result.Valid, Is.True);
             _userManagerMock.Verify(um => um.AddToRoleAsync(It.IsAny<ApplicationUser>(), It.IsAny<string>()), Times.Exactly(request.Roles.Count));
         }
 
         [Test]
-        public async Task Run_Deve_Retornar_Erro_Se_RoleManager_Lancar_Excecao()
+        public async Task Handle_Deve_Retornar_Erro_Se_RoleManager_Lancar_Excecao()
         {
             var request = new UsuarioRequest
             {
@@ -229,7 +229,7 @@ namespace Financials.Tests.Services.Account
 
             var criarUsuario = new CriarUsuario(_userManagerMock.Object, _usuarioRequestValidatorMock.Object, _roleManagerMock.Object);
 
-            var result = await criarUsuario.Run(request);
+            var result = await criarUsuario.Handle(request);
 
             Assert.Multiple(() =>
             {
@@ -239,7 +239,7 @@ namespace Financials.Tests.Services.Account
         }
 
         [Test]
-        public async Task Run_Deve_Excluir_Usuario_Se_Ocorrer_Excecao_Apos_Criacao()
+        public async Task Handle_Deve_Excluir_Usuario_Se_Ocorrer_Excecao_Apos_Criacao()
         {
             var request = new UsuarioRequest
             {
@@ -265,7 +265,7 @@ namespace Financials.Tests.Services.Account
                 .ReturnsAsync(true);
 
             var criarUsuario = new CriarUsuario(_userManagerMock.Object, _usuarioRequestValidatorMock.Object, _roleManagerMock.Object);
-            var result = await criarUsuario.Run(request);
+            var result = await criarUsuario.Handle(request);
 
             Assert.Multiple(() =>
             {
