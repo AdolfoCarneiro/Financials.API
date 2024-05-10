@@ -1,25 +1,28 @@
-﻿using Financials.Infrastructure.Repositorio.Interfaces;
+﻿using Financials.Core.DTO;
+using Financials.Infrastructure.Repositorio.Interfaces;
+using Financials.Services.Mappers;
 using Financials.Services.RequestsResponses.Base;
 using Financials.Services.RequestsResponses.Conta;
 using FluentValidation;
+using MediatR;
 using Entity = Financials.Core.Entity;
 
 namespace Financials.Services.Features.Conta
 {
     public class CriarConta(
         IContaRespositorio contaRepositorio,
-        IValidator<ContaRequest> validator
-        )
+        IValidator<CriarContaRequest> validator
+        ) : IRequestHandler<CriarContaRequest, ApplicationResponse<ContaDTO>>
     {
         private readonly IContaRespositorio _contaRepositorio = contaRepositorio;
-        private readonly IValidator<ContaRequest> _validator = validator;
+        private readonly IValidator<CriarContaRequest> _validator = validator;
 
-        public virtual async Task<ApplicationResponse<ContaResponse>> Run(ContaRequest request)
+        public virtual async Task<ApplicationResponse<ContaDTO>> Handle(CriarContaRequest request, CancellationToken cancellationToken = default)
         {
-            ApplicationResponse<ContaResponse> response = new();
+            ApplicationResponse<ContaDTO> response = new();
             try
             {
-                var validacao = await _validator.ValidateAsync(request);
+                var validacao = await _validator.ValidateAsync(request, cancellationToken);
                 if (!validacao.IsValid)
                 {
                     response.AddError(validacao.Errors);
@@ -28,15 +31,18 @@ namespace Financials.Services.Features.Conta
 
                 Entity.Conta conta = new()
                 {
-                    Id = request.Id,
                     Nome = request.Nome,
                     SaldoInicial = request.SaldoInicial,
                     Tipo = request.Tipo,
                 };
+
+                conta = await _contaRepositorio.Insert(conta);
+
+                response.AddData(conta.ToMapper());
             }
             catch (Exception ex)
             {
-                response.AddError(ex,"Erro ao criar a conta");
+                response.AddError(ex, "Erro ao criar a conta");
             }
             return response;
         }

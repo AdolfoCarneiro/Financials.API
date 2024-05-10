@@ -21,5 +21,8 @@
 	<ItemGroup>
 		<ProjectReference Include="..\Financials.Core\Financials.Core.csproj" />
 	</ItemGroup>
+	<ItemGroup>
+		<AssemblyAttribute Include="System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverageAttribute" />
+	</ItemGroup>
 
 </Project>

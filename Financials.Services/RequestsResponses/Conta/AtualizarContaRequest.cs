@@ -1,11 +1,12 @@
-﻿using Financials.Core.Enums;
+﻿using Financials.Core.DTO;
+using Financials.Core.Enums;
+using Financials.Services.RequestsResponses.Base;
 using MediatR;
 
 namespace Financials.Services.RequestsResponses.Conta
 {
-    public class ContaRequest : IRequest<ContaResponse>
+    public class AtualizarContaRequest : IRequest<ApplicationResponse<ContaDTO>>
     {
-        public Guid Id { get; set; }
         public string Nome { get; set; }
         public decimal SaldoInicial { get; set; }
         public TipoConta Tipo { get; set; }

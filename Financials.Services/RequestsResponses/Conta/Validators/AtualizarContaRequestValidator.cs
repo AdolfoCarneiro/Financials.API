@@ -2,9 +2,9 @@
 
 namespace Financials.Services.RequestsResponses.Conta.Validators
 {
-    public class ContaRequestValidator : AbstractValidator<ContaRequest>
+    public class AtualizarContaRequestValidator : AbstractValidator<CriarContaRequest>
     {
-        public ContaRequestValidator()
+        public AtualizarContaRequestValidator()
         {
             RuleFor(x => x.Nome).MinimumLength(2).WithMessage("Nome inválido");
         }

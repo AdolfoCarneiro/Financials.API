@@ -8,19 +8,19 @@ namespace Financials.Tests.Services.Account.Validators
     [TestFixture]
     public class ContaRequestValidatorTests
     {
-        private ContaRequestValidator _validator;
+        private CriarContaRequestValidator _validator;
 
         [SetUp]
         public void Setup()
         {
-            _validator = new ContaRequestValidator();
+            _validator = new CriarContaRequestValidator();
         }
 
         [TestCase("")]
         [TestCase("a")]
         public void Should_have_error_when_Nome_is_Invalid(string nome)
         {
-            var request = new ContaRequest()
+            var request = new CriarContaRequest()
             {
                 Nome = nome,
                 Id = Guid.NewGuid(),
