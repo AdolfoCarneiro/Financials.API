@@ -1,14 +1,10 @@
-﻿using Financials.Core.DTO;
-using Financials.Core.Enums;
-using Financials.Services.RequestsResponses.Base;
-using MediatR;
+﻿using System.Text.Json.Serialization;
 
 namespace Financials.Services.RequestsResponses.Conta
 {
-    public class AtualizarContaRequest : IRequest<ApplicationResponse<ContaDTO>>
+    public class AtualizarContaRequest : CriarContaRequest
     {
-        public string Nome { get; set; }
-        public decimal SaldoInicial { get; set; }
-        public TipoConta Tipo { get; set; }
+        [JsonIgnore]
+        public Guid Id { get; set; }
     }
 }

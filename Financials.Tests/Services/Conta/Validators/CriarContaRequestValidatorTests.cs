@@ -1,12 +1,11 @@
-﻿using Financials.Services.RequestsResponses.Account;
-using Financials.Services.RequestsResponses.Conta;
+﻿using Financials.Services.RequestsResponses.Conta;
 using Financials.Services.RequestsResponses.Conta.Validators;
 using FluentValidation.TestHelper;
 
-namespace Financials.Tests.Services.Account.Validators
+namespace Financials.Tests.Services.Conta.Validators
 {
     [TestFixture]
-    public class ContaRequestValidatorTests
+    public class CriarContaRequestValidatorTests
     {
         private CriarContaRequestValidator _validator;
 
@@ -23,7 +22,6 @@ namespace Financials.Tests.Services.Account.Validators
             var request = new CriarContaRequest()
             {
                 Nome = nome,
-                Id = Guid.NewGuid(),
                 SaldoInicial  = 0,
                 Tipo = Core.Enums.TipoConta.Corrente
             };

@@ -13,6 +13,7 @@ namespace Financials.Infrastructure.Repositorio.Interfaces
         IQueryable<T> GetAllQueryable();
         IQueryable<T> GetByExpression(Expression<Func<T, bool>> filter);
         Task<T> GetById(Guid id, string[] includeProperties = null);
+        Task<T> GetById(Guid id);
         IEnumerable<T> GetPage(Expression<Func<T, bool>> filter = null, Expression<Func<T, object>> orderByDescending = null, Expression<Func<T, object>> orderBy = null, string includeProperties = "", int page = 1, int take = 50);
         IEnumerable<TResult> GetPageLazy<TResult, TEntity>(Expression<Func<T, TResult>> selector, Expression<Func<T, bool>> filter = null, Expression<Func<T, T>> orderBy = null, string includeProperties = "", int page = 1, int take = 50);
         Task Insert(List<T> entidades);

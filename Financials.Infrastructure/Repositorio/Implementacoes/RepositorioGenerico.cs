@@ -50,6 +50,14 @@ namespace Financials.Infrastructure.Repositorio.Implementacoes
 
             return await query.FirstOrDefaultAsync(predicate);
         }
+
+        public async Task<T> GetById(Guid id)
+        {
+            var entidade = await _dbContext
+                .Set<T>()
+                .FindAsync(id);
+            return entidade;
+        }
         public async Task<T> Insert(T entidade)
         {
             await _dbContext.Set<T>().AddAsync(entidade);
