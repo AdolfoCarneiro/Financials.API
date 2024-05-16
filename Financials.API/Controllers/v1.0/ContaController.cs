@@ -25,13 +25,27 @@ namespace Financials.API.Controllers.v1._0
             return this.GetResponse(response);
         }
 
-        [HttpPost("{id}")]
+        [HttpPut("{id}")]
         [ProducesResponseType(typeof(ApplicationResponse<ContaDTO>), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(ApplicationResponse<ContaDTO>), (int)HttpStatusCode.BadRequest)]
         [ProducesResponseType(typeof(ApplicationResponse<ContaDTO>), (int)HttpStatusCode.InternalServerError)]
         public async Task<ActionResult<ApplicationResponse<ContaDTO>>> AtualizarConta(Guid id, [FromBody] AtualizarContaRequest request)
         {
             request.Id = id;
+            var response = await _mediator.Send(request);
+            return this.GetResponse(response);
+        }
+
+        [HttpGet("{id}")]
+        [ProducesResponseType(typeof(ApplicationResponse<ContaDTO>), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(ApplicationResponse<ContaDTO>), (int)HttpStatusCode.BadRequest)]
+        [ProducesResponseType(typeof(ApplicationResponse<ContaDTO>), (int)HttpStatusCode.InternalServerError)]
+        public async Task<ActionResult<ApplicationResponse<ContaDTO>>> ObterConta(Guid id)
+        {
+            var request = new GetContaRequest()
+            {
+                ContaId = id,
+            };
             var response = await _mediator.Send(request);
             return this.GetResponse(response);
         }

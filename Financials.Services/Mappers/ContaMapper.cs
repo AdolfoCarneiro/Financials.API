@@ -1,8 +1,10 @@
 ﻿using Financials.Core.DTO;
 using Financials.Core.Entity;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Financials.Services.Mappers
 {
+    [ExcludeFromCodeCoverage]
     public static class ContaMapper
     {
         public static ContaDTO ToMapper(this Conta conta)
@@ -12,7 +14,8 @@ namespace Financials.Services.Mappers
                 Id = conta.Id,
                 Nome = conta.Nome,
                 SaldoInicial = conta.SaldoInicial,
-                Tipo = conta.Tipo
+                Tipo = conta.Tipo,
+                Saldo = conta.Saldo,
             };
         }
 

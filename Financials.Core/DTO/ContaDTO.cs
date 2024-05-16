@@ -8,5 +8,6 @@ namespace Financials.Core.DTO
         public string Nome { get; set; }
         public decimal SaldoInicial { get; set; }
         public TipoConta Tipo { get; set; }
+        public decimal Saldo { get; set; }
     }
 }

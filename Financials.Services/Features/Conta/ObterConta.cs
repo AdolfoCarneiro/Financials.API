@@ -8,13 +8,11 @@ using MediatR;
 
 namespace Financials.Services.Features.Conta
 {
-    public class AtualizarConta(
-        IContaRespositorio contaRespositorio, IValidator<AtualizarContaRequest> validator
-        ) : IRequestHandler<AtualizarContaRequest, ApplicationResponse<ContaDTO>>
+    public class ObterConta(IContaRespositorio contaRespositorio, IValidator<GetContaRequest> validator) : IRequestHandler<GetContaRequest, ApplicationResponse<ContaDTO>>
     {
         private readonly IContaRespositorio _contaRespositorio = contaRespositorio;
-        private readonly IValidator<AtualizarContaRequest> _validator = validator;
-        public async Task<ApplicationResponse<ContaDTO>> Handle(AtualizarContaRequest request, CancellationToken cancellationToken = default)
+        private readonly IValidator<GetContaRequest> _validator = validator;
+        public async Task<ApplicationResponse<ContaDTO>> Handle(GetContaRequest request, CancellationToken cancellationToken)
         {
             var response = new ApplicationResponse<ContaDTO>();
             try
@@ -23,10 +21,8 @@ namespace Financials.Services.Features.Conta
                 if (!validacao.IsValid)
                 {
                     response.AddError(validacao.Errors);
-                    return response;
                 }
-
-                var conta = await _contaRespositorio.GetById(request.Id);
+                var conta = await _contaRespositorio.GetById(request.ContaId);
 
                 if (conta is null)
                 {
@@ -34,21 +30,13 @@ namespace Financials.Services.Features.Conta
                     return response;
                 }
 
-                conta.Tipo = request.Tipo;
-                conta.Nome = request.Nome;
-                conta.SaldoInicial = request.SaldoInicial;
-
-                await _contaRespositorio.Update(conta);
-
                 response.AddData(conta.ToMapper());
             }
             catch (Exception ex)
             {
-                response.AddError(ex, "Erro ao atualizar a conta");
+                response.AddError(ex, "Erro ao obter a conta");
             }
             return response;
-
-
         }
     }
 }

@@ -6,7 +6,7 @@ using FluentValidation.Results;
 using Moq;
 using Entity = Financials.Core.Entity;
 
-namespace Financials.Tests.Services.Conta
+namespace Financials.Services.Tests.Services.Conta
 {
     [TestFixture]
     [Category("UnitTests")]

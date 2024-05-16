@@ -5,8 +5,6 @@ namespace Financials.Infrastructure.Repositorio.Interfaces
 {
     public interface IRepositorioGenerico<T> where T : class
     {
-        FinancialsDbContext _dbContext { get; set; }
-
         int Count();
         List<T> GetAll();
         List<T> GetAll(params Expression<Func<T, object>>[] includeProperties);

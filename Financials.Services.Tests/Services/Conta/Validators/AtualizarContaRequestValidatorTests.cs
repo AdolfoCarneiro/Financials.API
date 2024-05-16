@@ -5,6 +5,7 @@ using FluentValidation.TestHelper;
 namespace Financials.Tests.Services.Conta.Validators
 {
     [TestFixture]
+    [Category("UnitTests")]
     public class AtualizarContaRequestValidatorTests
     {
         private AtualizarContaRequestValidator _validator;

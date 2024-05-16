@@ -13,9 +13,9 @@ namespace Financials.Core.Entity
         public string Nome { get; set; }
         public decimal SaldoInicial { get; set; }
         public TipoConta Tipo { get; set; }
-        public virtual ICollection<Transacao> Transacoes { get; set; }
-        public virtual ICollection<Transferencia> TransferenciasEnviadas { get; set; }
-        public virtual ICollection<Transferencia> TransferenciasRecebidas { get; set; }
+        public virtual ICollection<Transacao> Transacoes { get; set; } = [];
+        public virtual ICollection<Transferencia> TransferenciasEnviadas { get; set; } = [];
+        public virtual ICollection<Transferencia> TransferenciasRecebidas { get; set; } = [];
         [NotMapped]
         public decimal Saldo
         {

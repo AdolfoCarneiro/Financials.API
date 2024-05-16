@@ -1,7 +1,10 @@
-﻿using Financials.Infrastructure.Repositorio.Interfaces;
+﻿using Financials.Core.DTO;
+using Financials.Infrastructure.Repositorio.Interfaces;
 using Financials.Services.Features.Conta;
+using Financials.Services.Mappers;
 using Financials.Services.RequestsResponses.Base;
 using Financials.Services.RequestsResponses.Conta;
+using FluentAssertions;
 using FluentValidation.Results;
 using Moq;
 using Entity = Financials.Core.Entity;
@@ -10,28 +13,28 @@ namespace Financials.Services.Tests.Services.Conta
 {
     [TestFixture]
     [Category("UnitTests")]
-    public class AtualizarContaTests
+    public class ObterContaTests
     {
-        private AtualizarConta _atualizarConta;
+        private ObterConta _obterConta;
         private Mock<IContaRespositorio> _contaRepositorioMock;
-        private Mock<IValidator<AtualizarContaRequest>> _validatorMock;
+        private Mock<IValidator<GetContaRequest>> _validatorMock;
 
         [SetUp]
         public void SetUp()
         {
             _contaRepositorioMock = new Mock<IContaRespositorio>();
-            _validatorMock = new Mock<IValidator<AtualizarContaRequest>>();
-            _atualizarConta = new AtualizarConta(_contaRepositorioMock.Object, _validatorMock.Object);
+            _validatorMock = new Mock<IValidator<GetContaRequest>>();
+            _obterConta = new ObterConta(_contaRepositorioMock.Object, _validatorMock.Object);
         }
 
         [Test]
         public async Task Handle_ValidationFails_ReturnsErrorResponse()
         {
-            var request = new AtualizarContaRequest() { Id = Guid.Empty, Nome = string.Empty };
-            _validatorMock.Setup(v => v.ValidateAsync(It.IsAny<AtualizarContaRequest>(), It.IsAny<CancellationToken>()))
-                          .ReturnsAsync(new ValidationResult(new List<ValidationFailure> { new ValidationFailure("campo", "erro de validação") }));
+            var request = new GetContaRequest { ContaId = Guid.Empty };
+            _validatorMock.Setup(v => v.ValidateAsync(It.IsAny<GetContaRequest>(), It.IsAny<CancellationToken>()))
+                          .ReturnsAsync(new ValidationResult(new List<ValidationFailure> { new("ContaId", "ContaId inválido") }));
 
-            var response = await _atualizarConta.Handle(request);
+            var response = await _obterConta.Handle(request, CancellationToken.None);
 
             Assert.Multiple(() =>
             {
@@ -40,18 +43,17 @@ namespace Financials.Services.Tests.Services.Conta
                 Assert.That(response.Data, Is.Null);
                 Assert.That(response.Error.Type, Is.EqualTo(ResponseErrorType.ValidationError));
             });
-
         }
 
         [Test]
         public async Task Handle_AccountNotFound_ReturnsErrorResponse()
         {
-            _validatorMock.Setup(v => v.ValidateAsync(It.IsAny<AtualizarContaRequest>(), It.IsAny<CancellationToken>()))
+            var request = new GetContaRequest { ContaId = Guid.NewGuid() };
+            _validatorMock.Setup(v => v.ValidateAsync(It.IsAny<GetContaRequest>(), It.IsAny<CancellationToken>()))
                           .ReturnsAsync(new ValidationResult());
             _contaRepositorioMock.Setup(r => r.GetById(It.IsAny<Guid>())).ReturnsAsync((Entity.Conta)null);
 
-            var request = new AtualizarContaRequest();
-            var response = await _atualizarConta.Handle(request);
+            var response = await _obterConta.Handle(request, CancellationToken.None);
 
             Assert.Multiple(() =>
             {
@@ -62,34 +64,37 @@ namespace Financials.Services.Tests.Services.Conta
         }
 
         [Test]
-        public async Task Handle_SuccessfulUpdate_ReturnsSuccessResponseWithData()
+        public async Task Handle_SuccessfulRetrieval_ReturnsSuccessResponseWithData()
         {
-            var contaMock = new Entity.Conta {};
-            _validatorMock.Setup(v => v.ValidateAsync(It.IsAny<AtualizarContaRequest>(), It.IsAny<CancellationToken>()))
+            var id = Guid.NewGuid();
+            var contaMock = new Entity.Conta() { Id = id, Nome = "Nu", SaldoInicial = 0, Tipo = Core.Enums.TipoConta.Corrente };
+            ContaDTO contaDtoMock =contaMock.ToMapper();
+            _validatorMock.Setup(v => v.ValidateAsync(It.IsAny<GetContaRequest>(), It.IsAny<CancellationToken>()))
                           .ReturnsAsync(new ValidationResult());
             _contaRepositorioMock.Setup(r => r.GetById(It.IsAny<Guid>())).ReturnsAsync(contaMock);
-            _contaRepositorioMock.Setup(r => r.Update(It.IsAny<Entity.Conta>())).ReturnsAsync(contaMock);
 
-            var request = new AtualizarContaRequest();
-            var response = await _atualizarConta.Handle(request);
+            var request = new GetContaRequest { ContaId = Guid.NewGuid() };
+            var response = await _obterConta.Handle(request, CancellationToken.None);
+
 
             Assert.Multiple(() =>
             {
                 Assert.That(response.Valid, Is.True);
                 Assert.That(response.Error, Is.Null);
                 Assert.That(response.Data, Is.Not.Null);
+                response.Data.Should().BeEquivalentTo(contaDtoMock);
             });
         }
 
         [Test]
         public async Task Handle_ExceptionThrown_ReturnsErrorResponse()
         {
-            _validatorMock.Setup(v => v.ValidateAsync(It.IsAny<AtualizarContaRequest>(), It.IsAny<CancellationToken>()))
+            var request = new GetContaRequest { ContaId = Guid.NewGuid() };
+            _validatorMock.Setup(v => v.ValidateAsync(It.IsAny<GetContaRequest>(), It.IsAny<CancellationToken>()))
                           .ReturnsAsync(new ValidationResult());
             _contaRepositorioMock.Setup(r => r.GetById(It.IsAny<Guid>())).ThrowsAsync(new Exception("Erro de teste"));
 
-            var request = new AtualizarContaRequest();
-            var response = await _atualizarConta.Handle(request);
+            var response = await _obterConta.Handle(request, CancellationToken.None);
 
             Assert.Multiple(() =>
             {
@@ -98,6 +103,6 @@ namespace Financials.Services.Tests.Services.Conta
                 Assert.That(response.Error.Type, Is.EqualTo(ResponseErrorType.InternalError));
             });
         }
-
     }
 }
+
