@@ -9,7 +9,7 @@ using Moq;
 using System.Linq.Expressions;
 using Entity = Financials.Core.Entity;
 
-namespace Financials.Services.Tests.Services.Conta.Validators
+namespace Financials.Services.Tests.Services.Conta
 {
     [TestFixture]
     [Category("UnitTests")]
