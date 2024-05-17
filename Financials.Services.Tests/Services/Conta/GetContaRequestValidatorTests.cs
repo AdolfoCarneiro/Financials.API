@@ -2,7 +2,7 @@
 using Financials.Services.RequestsResponses.Conta;
 using FluentValidation.TestHelper;
 
-namespace Financials.Services.Tests.Services.Conta.Validators
+namespace Financials.Services.Tests.Services.Conta
 {
     [TestFixture]
     [Category("UnitTests")]
