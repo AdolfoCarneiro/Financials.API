@@ -4,6 +4,7 @@ using Financials.Infrastructure.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Financials.Infrastructure.Migrations
 {
     [DbContext(typeof(FinancialsDbContext))]
-    partial class FinancialsDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240517172449_alter_all_ts_add_c_userId")]
+    partial class alter_all_ts_add_c_userId
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

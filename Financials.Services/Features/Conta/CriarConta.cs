@@ -1,4 +1,5 @@
 ﻿using Financials.Core.DTO;
+using Financials.Infrastructure.HttpService;
 using Financials.Infrastructure.Repositorio.Interfaces;
 using Financials.Services.Mappers;
 using Financials.Services.RequestsResponses.Base;
@@ -11,11 +12,13 @@ namespace Financials.Services.Features.Conta
 {
     public class CriarConta(
         IContaRespositorio contaRepositorio,
-        IValidator<CriarContaRequest> validator
+        IValidator<CriarContaRequest> validator,
+        IUserContext userContext
         ) : IRequestHandler<CriarContaRequest, ApplicationResponse<ContaDTO>>
     {
         private readonly IContaRespositorio _contaRepositorio = contaRepositorio;
         private readonly IValidator<CriarContaRequest> _validator = validator;
+        private readonly IUserContext _userContext = userContext;
 
         public virtual async Task<ApplicationResponse<ContaDTO>> Handle(CriarContaRequest request, CancellationToken cancellationToken = default)
         {
@@ -34,6 +37,7 @@ namespace Financials.Services.Features.Conta
                     Nome = request.Nome,
                     SaldoInicial = request.SaldoInicial,
                     Tipo = request.Tipo,
+                    UserId = _userContext.GetUserId()
                 };
 
                 conta = await _contaRepositorio.Insert(conta);

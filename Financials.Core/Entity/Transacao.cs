@@ -1,11 +1,12 @@
 ﻿using Financials.Core.Enums;
+using Financials.Core.Interfaces;
 using System.ComponentModel.DataAnnotations;
 using System.Diagnostics.CodeAnalysis;
 
 namespace Financials.Core.Entity
 {
     [ExcludeFromCodeCoverage]
-    public class Transacao
+    public class Transacao : IUserOwnedResource
     {
         [Key]
         public Guid Id { get; set; }
@@ -25,6 +26,7 @@ namespace Financials.Core.Entity
         public FrequenciaRecorrencia FrequenciaRecorrencia { get; set; }
         public int TotalParcelas { get; set; } = 1;
         public int NumeroParcela { get; set; } = 1;
+        public Guid UserId { get; set; }
     }
 }
 

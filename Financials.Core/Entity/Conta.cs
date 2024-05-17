@@ -1,4 +1,5 @@
 ﻿using Financials.Core.Enums;
+using Financials.Core.Interfaces;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Diagnostics.CodeAnalysis;
@@ -6,7 +7,7 @@ using System.Diagnostics.CodeAnalysis;
 namespace Financials.Core.Entity
 {
     [ExcludeFromCodeCoverage]
-    public class Conta
+    public class Conta : IUserOwnedResource
     {
         [Key]
         public Guid Id { get; set; }
@@ -16,6 +17,7 @@ namespace Financials.Core.Entity
         public virtual ICollection<Transacao> Transacoes { get; set; } = [];
         public virtual ICollection<Transferencia> TransferenciasEnviadas { get; set; } = [];
         public virtual ICollection<Transferencia> TransferenciasRecebidas { get; set; } = [];
+        public Guid UserId { get; set; }
         [NotMapped]
         public decimal Saldo
         {

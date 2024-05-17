@@ -1,15 +1,18 @@
 ﻿using Financials.Core.Entity;
+using Financials.Core.Interfaces;
+using Financials.Infrastructure.HttpService;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using System.Diagnostics.CodeAnalysis;
-using System.Reflection.Emit;
+using System.Linq.Expressions;
+using System.Reflection;
 
 namespace Financials.Infrastructure.Context
 {
     [ExcludeFromCodeCoverage]
-    public class FinancialsDbContext(DbContextOptions<FinancialsDbContext> options) :  IdentityDbContext<ApplicationUser>(options)
+    public class FinancialsDbContext(DbContextOptions<FinancialsDbContext> options,IUserContext userContext) :  IdentityDbContext<ApplicationUser>(options)
     {
-
+        private readonly IUserContext _userContext = userContext;
         public DbSet<CartaoCredito> CartaoCredito { get; set; }
         public DbSet<Categoria> Categoria { get; set; }
         public DbSet<Conta> Conta { get; set; }
@@ -19,6 +22,20 @@ namespace Financials.Infrastructure.Context
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
+
+            foreach (var entityType in modelBuilder.Model.GetEntityTypes())
+            {
+                if (typeof(IUserOwnedResource).IsAssignableFrom(entityType.ClrType))
+                {
+                    var userIdProperty = entityType.FindProperty(nameof(IUserOwnedResource.UserId));
+                    var parameter = Expression.Parameter(entityType.ClrType, "e");
+                    var property = Expression.Property(parameter, userIdProperty.PropertyInfo);
+                    var methodInfo = typeof(FinancialsDbContext).GetMethod(nameof(GetCurrentUserId), BindingFlags.NonPublic | BindingFlags.Instance);
+                    var body = Expression.Call(Expression.Constant(this), methodInfo);
+                    var filter = Expression.Equal(property, body);
+                    modelBuilder.Entity(entityType.ClrType).HasQueryFilter(Expression.Lambda(filter, parameter));
+                }
+            }
 
             modelBuilder.Entity<CartaoCredito>()
                 .HasMany(c => c.Transacoes)
@@ -60,6 +77,11 @@ namespace Financials.Infrastructure.Context
                 .HasMany(c => c.Faturas)
                 .WithOne(f => f.CartaoCredito)
                 .HasForeignKey(t => t.CartaoCreditoId);
+        }
+
+        private Guid GetCurrentUserId()
+        {
+            return _userContext.GetUserId();
         }
     }
 }

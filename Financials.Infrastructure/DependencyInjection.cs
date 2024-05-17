@@ -1,5 +1,6 @@
 ﻿using Financials.Infrastructure.Configuraton;
 using Financials.Infrastructure.Context;
+using Financials.Infrastructure.HttpService;
 using Financials.Infrastructure.Repositorio.Implementacoes;
 using Financials.Infrastructure.Seeds;
 using Microsoft.EntityFrameworkCore;
@@ -15,9 +16,12 @@ namespace Financials.Infrastructure
     {
         public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
         {
+            services.AddScoped<IUserContext, UserContext>();
+
             var defaultConnectionString = configuration.GetConnectionString("DefaultConnection");
-            services.AddDbContext<FinancialsDbContext>(options =>
+            services.AddDbContext<FinancialsDbContext>((provider, options) =>
             {
+                var userContext = provider.GetService<IUserContext>();
                 options.UseSqlServer(defaultConnectionString);
                 options.UseLazyLoadingProxies();
             });

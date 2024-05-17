@@ -12,6 +12,7 @@ using Microsoft.OpenApi.Models;
 using System.Reflection;
 using Financials.Services;
 using Financials.Infrastructure.Seeds;
+using Financials.API.Middlewares;
 
 namespace Financials.API
 {
@@ -21,6 +22,7 @@ namespace Financials.API
         {
             var builder = WebApplication.CreateBuilder(args);
 
+            builder.Services.AddHttpContextAccessor();
             builder.Services.AddApiVersioning(options =>
             {
                 options.AssumeDefaultVersionWhenUnspecified = true;
@@ -119,6 +121,7 @@ namespace Financials.API
 
             app.UseAuthorization();
 
+            app.UseMiddleware<UserMiddleware>();
 
             app.MapControllers();
             
