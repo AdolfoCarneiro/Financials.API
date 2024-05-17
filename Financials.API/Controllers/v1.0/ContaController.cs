@@ -1,4 +1,5 @@
 ﻿using Financials.Core.DTO;
+using Financials.Core.Enums;
 using Financials.Services.RequestsResponses.Base;
 using Financials.Services.RequestsResponses.Conta;
 using MediatR;
@@ -45,6 +46,24 @@ namespace Financials.API.Controllers.v1._0
             var request = new GetContaRequest()
             {
                 ContaId = id,
+            };
+            var response = await _mediator.Send(request);
+            return this.GetResponse(response);
+        }
+
+        [HttpGet]
+        [ProducesResponseType(typeof(ApplicationResponse<ContaDTO>), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(ApplicationResponse<ContaDTO>), (int)HttpStatusCode.BadRequest)]
+        [ProducesResponseType(typeof(ApplicationResponse<ContaDTO>), (int)HttpStatusCode.InternalServerError)]
+        public async Task<ActionResult<ApplicationResponse<IEnumerable<ContaDTO>>>> ObterContas(
+            [FromQuery] string filtro,
+            [FromQuery] TipoConta? tipo
+            )
+        {
+            var request = new GetContasByFilterRequest()
+            {
+                Filtro = filtro,
+                TipoConta = tipo
             };
             var response = await _mediator.Send(request);
             return this.GetResponse(response);
