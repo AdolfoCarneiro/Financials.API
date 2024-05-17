@@ -27,13 +27,19 @@ namespace Financials.Infrastructure.Context
             {
                 if (typeof(IUserOwnedResource).IsAssignableFrom(entityType.ClrType))
                 {
-                    var userIdProperty = entityType.FindProperty(nameof(IUserOwnedResource.UserId));
                     var parameter = Expression.Parameter(entityType.ClrType, "e");
-                    var property = Expression.Property(parameter, userIdProperty.PropertyInfo);
+                    var property = Expression.Property(parameter, nameof(IUserOwnedResource.UserId));
                     var methodInfo = typeof(FinancialsDbContext).GetMethod(nameof(GetCurrentUserId), BindingFlags.NonPublic | BindingFlags.Instance);
-                    var body = Expression.Call(Expression.Constant(this), methodInfo);
-                    var filter = Expression.Equal(property, body);
-                    modelBuilder.Entity(entityType.ClrType).HasQueryFilter(Expression.Lambda(filter, parameter));
+                    var currentUserId = Expression.Call(Expression.Constant(this), methodInfo);
+                    var emptyGuid = Expression.Constant(Guid.Empty);
+
+                    var body = Expression.OrElse(
+                        Expression.Equal(property, currentUserId),
+                        Expression.Equal(property, emptyGuid)
+                    );
+
+                    var filter = Expression.Lambda(body, parameter);
+                    modelBuilder.Entity(entityType.ClrType).HasQueryFilter(filter);
                 }
             }
 
