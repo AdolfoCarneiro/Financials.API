@@ -1,4 +1,5 @@
 ﻿using Financials.Core.Enums;
+using Financials.Infrastructure.HttpService;
 using Financials.Infrastructure.Repositorio.Interfaces;
 using Financials.Services.Features.Conta;
 using Financials.Services.RequestsResponses.Conta;
@@ -15,13 +16,15 @@ namespace Financials.Services.Tests.Services.Conta
         private CriarConta _criarConta;
         private Mock<IContaRespositorio> _contaRepositorioMock;
         private Mock<IValidator<CriarContaRequest>> _validatorMock;
+        private Mock<IUserContext> _userContextMock;
 
         [SetUp]
         public void SetUp()
         {
             _contaRepositorioMock = new Mock<IContaRespositorio>();
             _validatorMock = new Mock<IValidator<CriarContaRequest>>();
-            _criarConta = new CriarConta(_contaRepositorioMock.Object, _validatorMock.Object);
+            _userContextMock = new Mock<IUserContext>();
+            _criarConta = new CriarConta(_contaRepositorioMock.Object, _validatorMock.Object,_userContextMock.Object);
         }
 
         [Test]
