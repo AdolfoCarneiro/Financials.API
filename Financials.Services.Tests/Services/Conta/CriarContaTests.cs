@@ -16,15 +16,13 @@ namespace Financials.Services.Tests.Services.Conta
         private CriarConta _criarConta;
         private Mock<IContaRespositorio> _contaRepositorioMock;
         private Mock<IValidator<CriarContaRequest>> _validatorMock;
-        private Mock<IUserContext> _userContextMock;
 
         [SetUp]
         public void SetUp()
         {
             _contaRepositorioMock = new Mock<IContaRespositorio>();
             _validatorMock = new Mock<IValidator<CriarContaRequest>>();
-            _userContextMock = new Mock<IUserContext>();
-            _criarConta = new CriarConta(_contaRepositorioMock.Object, _validatorMock.Object,_userContextMock.Object);
+            _criarConta = new CriarConta(_contaRepositorioMock.Object, _validatorMock.Object);
         }
 
         [Test]
@@ -37,9 +35,13 @@ namespace Financials.Services.Tests.Services.Conta
 
             var result = await _criarConta.Handle(request, CancellationToken.None);
 
-            Assert.That(result.Valid, Is.False);
-            Assert.That(result.Error, Is.Not.Null);
-            Assert.That(result.Error.CustomMessage, Is.EqualTo("Nome é obrigatório"));
+            Assert.Multiple(() =>
+            {
+                Assert.That(result.Valid, Is.False);
+                Assert.That(result.Error, Is.Not.Null);
+                Assert.That(result.Error.CustomMessage, Is.EqualTo("Nome é obrigatório"));
+            });
+
         }
 
         [Test]
