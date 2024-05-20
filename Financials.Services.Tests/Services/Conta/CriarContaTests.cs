@@ -1,5 +1,4 @@
 ﻿using Financials.Core.Enums;
-using Financials.Infrastructure.HttpService;
 using Financials.Infrastructure.Repositorio.Interfaces;
 using Financials.Services.Features.Conta;
 using Financials.Services.RequestsResponses.Conta;
