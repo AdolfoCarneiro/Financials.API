@@ -1,6 +1,7 @@
 ﻿using Financials.Core.Entity;
 using Financials.Core.Interfaces;
 using Financials.Infrastructure.HttpService;
+using Financials.Infrastructure.Interceptors;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using System.Diagnostics.CodeAnalysis;
@@ -10,9 +11,10 @@ using System.Reflection;
 namespace Financials.Infrastructure.Context
 {
     [ExcludeFromCodeCoverage]
-    public class FinancialsDbContext(DbContextOptions<FinancialsDbContext> options,IUserContext userContext) :  IdentityDbContext<ApplicationUser>(options)
+    public class FinancialsDbContext(DbContextOptions<FinancialsDbContext> options,IUserContext userContext, UserSaveChangesInterceptor saveChangesInterceptor) :  IdentityDbContext<ApplicationUser>(options)
     {
         private readonly IUserContext _userContext = userContext;
+        private readonly UserSaveChangesInterceptor _saveChangesInterceptor = saveChangesInterceptor;
         public DbSet<CartaoCredito> CartaoCredito { get; set; }
         public DbSet<Categoria> Categoria { get; set; }
         public DbSet<Conta> Conta { get; set; }
@@ -85,6 +87,11 @@ namespace Financials.Infrastructure.Context
                 .HasForeignKey(t => t.CartaoCreditoId);
         }
 
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            optionsBuilder.AddInterceptors(_saveChangesInterceptor);
+            base.OnConfiguring(optionsBuilder);
+        }
         private Guid GetCurrentUserId()
         {
             return _userContext.GetUserId();
