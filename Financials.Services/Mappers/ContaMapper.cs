@@ -4,7 +4,6 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace Financials.Services.Mappers
 {
-    [ExcludeFromCodeCoverage]
     public static class ContaMapper
     {
         public static ContaDTO ToMapper(this Conta conta)
@@ -19,15 +18,5 @@ namespace Financials.Services.Mappers
             };
         }
 
-        public static Conta ToMapper(this ContaDTO conta)
-        {
-            return new Conta
-            {
-                Id = conta.Id,
-                Nome = conta.Nome,
-                SaldoInicial = conta.SaldoInicial,
-                Tipo = conta.Tipo
-            };
-        }
     }
 }
