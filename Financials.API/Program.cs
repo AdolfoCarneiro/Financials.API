@@ -1,18 +1,16 @@
 
+using Financials.API.Middlewares;
 using Financials.Core.Entity;
 using Financials.Infrastructure;
 using Financials.Infrastructure.Configuraton;
 using Financials.Infrastructure.Context;
-using Financials.Infrastructure.Repositorio;
+using Financials.Infrastructure.Seeds;
+using Financials.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ApiExplorer;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using System.Reflection;
-using Financials.Services;
-using Financials.Infrastructure.Seeds;
-using Financials.API.Middlewares;
 
 namespace Financials.API
 {

@@ -18,6 +18,5 @@ namespace Financials.Services.RequestsResponses.Transacao
         public bool Recorrente { get; set; } = false;
         public FrequenciaRecorrencia FrequenciaRecorrencia { get; set; }
         public int TotalParcelas { get; set; } = 1;
-        public Guid UserId { get; set; }
     }
 }
