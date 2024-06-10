@@ -5,7 +5,6 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace Financials.Core.Entity
 {
-    [ExcludeFromCodeCoverage]
     public class Transacao : IUserOwnedResource
     {
         [Key]
