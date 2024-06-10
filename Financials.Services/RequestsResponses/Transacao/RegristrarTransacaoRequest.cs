@@ -16,7 +16,7 @@ namespace Financials.Services.RequestsResponses.Transacao
         public Guid? CartaoCreditoId { get; set; }
         public Guid? FaturaId { get; set; }
         public bool Recorrente { get; set; } = false;
-        public FrequenciaRecorrencia FrequenciaRecorrencia { get; set; }
+        public FrequenciaRecorrencia FrequenciaRecorrencia { get; set; } = FrequenciaRecorrencia.Mensal;
         public int TotalParcelas { get; set; } = 1;
     }
 }

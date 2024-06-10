@@ -66,7 +66,7 @@ namespace Financials.Infrastructure.Repositorio.Implementacoes
         }
         public async Task Insert(List<T> entidades)
         {
-            entidades.ForEach(async e => { await _dbContext.Set<T>().AddAsync(e); });
+            await _dbContext.Set<T>().AddRangeAsync(entidades);
             await _dbContext.SaveChangesAsync();
         }
         public async Task RemoveAsync(Guid id)
