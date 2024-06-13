@@ -42,7 +42,6 @@ public class RegistrarTransacao(
                     Descricao = request.Descricao,
                     CartaoCreditoId = request.CartaoCreditoId,
                     ContaId = request.ContaId,
-                    FaturaId = request.FaturaId,
                     FrequenciaRecorrencia = request.FrequenciaRecorrencia,
                     TotalParcelas = request.TotalParcelas,
                     Recorrente = request.Recorrente,
@@ -82,7 +81,6 @@ public class RegistrarTransacao(
                         Descricao = descricao,
                         CartaoCreditoId = request.CartaoCreditoId,
                         ContaId = request.ContaId,
-                        FaturaId = request.FaturaId,
                         FrequenciaRecorrencia = request.FrequenciaRecorrencia,
                         NumeroParcela = i,
                         TotalParcelas = request.TotalParcelas,
@@ -113,4 +111,3 @@ public class RegistrarTransacao(
     }
 
 }
-

@@ -18,7 +18,6 @@ namespace Financials.Infrastructure.Context
         public DbSet<CartaoCredito> CartaoCredito { get; set; }
         public DbSet<Categoria> Categoria { get; set; }
         public DbSet<Conta> Conta { get; set; }
-        public DbSet<Fatura> Fatura { get; set; }
         public DbSet<Transacao> Transacao { get; set; }
         public DbSet<Transferencia> Transferencia { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -49,19 +48,21 @@ namespace Financials.Infrastructure.Context
                 .HasMany(c => c.Transacoes)
                 .WithOne(t => t.CartaoCredito)
                 .HasForeignKey(t => t.CartaoCreditoId)
-                .IsRequired(false); 
-
+                .IsRequired(false)
+                .OnDelete(DeleteBehavior.Cascade); 
 
             modelBuilder.Entity<Categoria>()
                 .HasMany(c => c.Transacoes)
                 .WithOne(t => t.Categoria)
-                .HasForeignKey(t => t.CategoriaId);
+                .HasForeignKey(t => t.CategoriaId)
+                .OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<Conta>()
                 .HasMany(c => c.Transacoes)
                 .WithOne(t => t.Conta)
                 .HasForeignKey(t => t.ContaId)
-                .IsRequired(false); 
+                .IsRequired(false)
+                .OnDelete(DeleteBehavior.Cascade); 
 
             modelBuilder.Entity<Conta>()
                 .HasMany(c => c.TransferenciasEnviadas)
@@ -74,17 +75,6 @@ namespace Financials.Infrastructure.Context
                 .WithOne(t => t.ContaDestino)
                 .HasForeignKey(t => t.ContaDestinoId)
                 .OnDelete(DeleteBehavior.NoAction);
-
-            modelBuilder.Entity<Fatura>()
-                .HasMany(f => f.Transacoes)
-                .WithOne(t => t.Fatura)
-                .HasForeignKey(t => t.FaturaId)
-                .IsRequired(false); 
-
-            modelBuilder.Entity<CartaoCredito>()
-                .HasMany(c => c.Faturas)
-                .WithOne(f => f.CartaoCredito)
-                .HasForeignKey(t => t.CartaoCreditoId);
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)

@@ -19,8 +19,6 @@ namespace Financials.Core.Entity
         public virtual Categoria Categoria { get; set; }
         public Guid? CartaoCreditoId { get; set; }
         public virtual CartaoCredito CartaoCredito { get; set; }
-        public Guid? FaturaId { get; set; }
-        public virtual Fatura Fatura { get; set; }
         public bool Recorrente { get; set; } = false;
         public FrequenciaRecorrencia FrequenciaRecorrencia { get; set; }
         public int TotalParcelas { get; set; } = 1;

@@ -18,7 +18,6 @@ namespace Financials.Services.Mappers
                 ContaId = transacao.ContaId,
                 CategoriaId = transacao.CategoriaId,
                 CartaoCreditoId = transacao.CartaoCreditoId,
-                FaturaId = transacao.FaturaId,
                 Recorrente = transacao.Recorrente,
                 FrequenciaRecorrencia = transacao.FrequenciaRecorrencia,
                 TotalParcelas = transacao.TotalParcelas,
