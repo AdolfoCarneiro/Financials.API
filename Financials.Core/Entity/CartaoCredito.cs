@@ -14,6 +14,7 @@ namespace Financials.Core.Entity
         public DateTime DataFechamento { get; set; }
         public DateTime DataVencimento { get; set; }
         public virtual ICollection<Transacao> Transacoes { get; set; }
+        public virtual ICollection<DataFechamentoCartaoCredito> DatasFechamento { get; set; }
         public Guid UserId { get; set; }
     }
 }

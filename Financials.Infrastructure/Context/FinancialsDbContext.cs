@@ -20,6 +20,7 @@ namespace Financials.Infrastructure.Context
         public DbSet<Conta> Conta { get; set; }
         public DbSet<Transacao> Transacao { get; set; }
         public DbSet<Transferencia> Transferencia { get; set; }
+        public DbSet<DataFechamentoCartaoCredito> DataFechamentoCartaoCredito { get; set;}
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
@@ -75,6 +76,13 @@ namespace Financials.Infrastructure.Context
                 .WithOne(t => t.ContaDestino)
                 .HasForeignKey(t => t.ContaDestinoId)
                 .OnDelete(DeleteBehavior.NoAction);
+
+            modelBuilder.Entity<CartaoCredito>()
+                .HasMany(cc => cc.DatasFechamento)
+                .WithOne(dfcc => dfcc.CartaoCredito)
+                .HasForeignKey(dfcc => dfcc.CartaoCreditoId)
+                .OnDelete(DeleteBehavior.Cascade)
+                .IsRequired(true);
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)

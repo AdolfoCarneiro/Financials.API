@@ -85,7 +85,6 @@ namespace Financials.Services.Tests.Services.Transacao.Validators
                 ContaId = Guid.NewGuid(),
                 CategoriaId = Guid.NewGuid(),
                 CartaoCreditoId = null,
-                FaturaId = null,
                 Recorrente = false,
                 FrequenciaRecorrencia = FrequenciaRecorrencia.Mensal,
                 TotalParcelas = 1
