@@ -1,5 +1,4 @@
 ﻿using Financials.Core.DTO;
-using Financials.Infrastructure.HttpService;
 using Financials.Infrastructure.Repositorio.Interfaces;
 using Financials.Services.Mappers;
 using Financials.Services.RequestsResponses.Base;
