@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Financials.Infrastructure.Migrations
 {
     [DbContext(typeof(FinancialsDbContext))]
-    [Migration("20240619114938_create_t_dataFechamentoCartao")]
-    partial class create_t_dataFechamentoCartao
+    [Migration("20240621144922_create_t_DataFechamentoCartao")]
+    partial class create_t_DataFechamentoCartao
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -186,11 +186,11 @@ namespace Financials.Infrastructure.Migrations
                     b.Property<DateTime>("DataAlteracao")
                         .HasColumnType("datetime2");
 
-                    b.Property<Guid>("DataFechamentoAnterior")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<DateTime>("DataFechamentoAnterior")
+                        .HasColumnType("datetime2");
 
-                    b.Property<Guid>("DataVencimentoAnterior")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<DateTime>("DataVencimentoAnterior")
+                        .HasColumnType("datetime2");
 
                     b.HasKey("Id");
 

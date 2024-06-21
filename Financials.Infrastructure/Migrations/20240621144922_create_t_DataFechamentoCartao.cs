@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Financials.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class create_t_dataFechamentoCartao : Migration
+    public partial class create_t_DataFechamentoCartao : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -16,8 +16,8 @@ namespace Financials.Infrastructure.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    DataVencimentoAnterior = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    DataFechamentoAnterior = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    DataVencimentoAnterior = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    DataFechamentoAnterior = table.Column<DateTime>(type: "datetime2", nullable: false),
                     DataAlteracao = table.Column<DateTime>(type: "datetime2", nullable: false),
                     CartaoCreditoId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
                 },

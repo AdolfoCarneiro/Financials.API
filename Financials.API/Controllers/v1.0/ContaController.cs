@@ -31,7 +31,7 @@ namespace Financials.API.Controllers.v1._0
         [ProducesResponseType(typeof(ApplicationResponse<ContaDTO>), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(ApplicationResponse<ContaDTO>), (int)HttpStatusCode.BadRequest)]
         [ProducesResponseType(typeof(ApplicationResponse<ContaDTO>), (int)HttpStatusCode.InternalServerError)]
-        public async Task<ActionResult<ApplicationResponse<ContaDTO>>> AtualizarConta(Guid id, [FromBody] AtualizarContaRequest request)
+        public async Task<ActionResult<ApplicationResponse<ContaDTO>>> AtualizarConta([FromRoute]Guid id, [FromBody] AtualizarContaRequest request)
         {
             request.Id = id;
             var response = await _mediator.Send(request);

@@ -6,8 +6,8 @@ namespace Financials.Core.Entity
     {
         [Key]
         public Guid Id { get; set; }
-        public Guid DataVencimentoAnterior { get; set; }
-        public Guid DataFechamentoAnterior { get; set; }
+        public DateTime DataVencimentoAnterior { get; set; }
+        public DateTime DataFechamentoAnterior { get; set; }
         public DateTime DataAlteracao { get; set; }
         public Guid CartaoCreditoId { get; set; }
         public virtual CartaoCredito CartaoCredito { get; set; }

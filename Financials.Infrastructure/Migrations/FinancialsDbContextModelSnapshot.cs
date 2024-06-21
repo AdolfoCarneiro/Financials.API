@@ -183,11 +183,11 @@ namespace Financials.Infrastructure.Migrations
                     b.Property<DateTime>("DataAlteracao")
                         .HasColumnType("datetime2");
 
-                    b.Property<Guid>("DataFechamentoAnterior")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<DateTime>("DataFechamentoAnterior")
+                        .HasColumnType("datetime2");
 
-                    b.Property<Guid>("DataVencimentoAnterior")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<DateTime>("DataVencimentoAnterior")
+                        .HasColumnType("datetime2");
 
                     b.HasKey("Id");
 

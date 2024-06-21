@@ -21,8 +21,20 @@ namespace Financials.API.Controllers.v1._0
         [ProducesResponseType(typeof(ApplicationResponse<CartaoCreditoDTO>), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(ApplicationResponse<CartaoCreditoDTO>), (int)HttpStatusCode.BadRequest)]
         [ProducesResponseType(typeof(ApplicationResponse<CartaoCreditoDTO>), (int)HttpStatusCode.InternalServerError)]
-        public async Task<ActionResult<ApplicationResponse<CartaoCreditoDTO>>> CriarConta([FromBody] RegistrarCartaoRequest request)
+        public async Task<ActionResult<ApplicationResponse<CartaoCreditoDTO>>> CriarCartao([FromBody] RegistrarCartaoRequest request)
         {
+            var response = await _mediator.Send(request);
+            return this.GetResponse(response);
+        }
+
+        [HttpPut("{id}")]
+        [ProducesResponseType(typeof(ApplicationResponse<CartaoCreditoDTO>), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(ApplicationResponse<CartaoCreditoDTO>), (int)HttpStatusCode.BadRequest)]
+        [ProducesResponseType(typeof(ApplicationResponse<CartaoCreditoDTO>), (int)HttpStatusCode.InternalServerError)]
+        [ProducesResponseType(typeof(ApplicationResponse<CartaoCreditoDTO>), (int)HttpStatusCode.NotFound)]
+        public async Task<ActionResult<ApplicationResponse<CartaoCreditoDTO>>> AtualizarCartao([FromRoute]Guid id, [FromBody] AtualizarCartaoRequest request)
+        {
+            request.Id = id;
             var response = await _mediator.Send(request);
             return this.GetResponse(response);
         }
