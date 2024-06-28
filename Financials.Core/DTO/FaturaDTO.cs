@@ -7,6 +7,5 @@
         public DateTime Fechamento { get; set; }
         public DateTime Vencimento { get; set; }
         public CartaoCreditoDTO CartaoCredito { get; set; }
-
     }
 }
