@@ -77,12 +77,18 @@ namespace Financials.Services.Features.Fatura
 
         private static (DateTime dataInicio, DateTime dataFim) ObterPeriodoFatura(DateTime dataFechamento, DateTime dataReferencia)
         {
-            var dataInicio = new DateTime(dataReferencia.Year, dataReferencia.Month, dataFechamento.Day);
-            if (dataReferencia.Day >= dataFechamento.Day)
+            DateTime dataInicio;
+            if (dataReferencia.Day < dataFechamento.Day)
             {
-                dataInicio = dataInicio.AddMonths(1);
+                dataInicio = new DateTime(dataReferencia.Year, dataReferencia.Month, dataFechamento.Day).AddMonths(-1);
             }
-            return (dataInicio, dataInicio.AddMonths(1));
+            else
+            {
+                dataInicio = new DateTime(dataReferencia.Year, dataReferencia.Month, dataFechamento.Day);
+            }
+            var dataFim = dataInicio.AddMonths(1);
+            return (dataInicio, dataFim);
         }
+
     }
 }
