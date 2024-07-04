@@ -4,7 +4,6 @@ using Financials.Services.Features.CartaoCredito;
 using Financials.Services.RequestsResponses.Base;
 using Financials.Services.RequestsResponses.Cartao;
 using FluentValidation.Results;
-using Moq;
 using Entity = Financials.Core.Entity;
 
 namespace Financials.Services.Tests.Services.Cartao

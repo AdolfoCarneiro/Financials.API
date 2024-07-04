@@ -86,8 +86,8 @@ namespace Financials.Services.Tests.Services.Fatura
 
             var transacoesMock = new List<Entity.Transacao>
             {
-                new Entity.Transacao { Valor = 100, Data = new DateTime(2023, 10, 6) },
-                new Entity.Transacao { Valor = 200, Data = new DateTime(2023, 10, 10) }
+                new() { Valor = 100, Data = new DateTime(2023, 10, 6) },
+                new() { Valor = 200, Data = new DateTime(2023, 10, 10) }
             };
 
             var request = new ObterFaturaRequest
@@ -98,8 +98,7 @@ namespace Financials.Services.Tests.Services.Fatura
 
             var alteracoesFechamentoMock = new List<Entity.DataFechamentoCartaoCredito>
             {
-                new Entity.DataFechamentoCartaoCredito
-                {
+                new() {
                     CartaoCreditoId = cartaoMock.Id,
                     DataAlteracao = new DateTime(2023, 9, 1),
                     DataFechamentoAnterior = new DateTime(2023, 10, 10)
@@ -126,7 +125,7 @@ namespace Financials.Services.Tests.Services.Fatura
                 Assert.That(response.Error, Is.Null);
                 Assert.That(response.Data, Is.Not.Null);
                 Assert.That(response.Data.Valor, Is.EqualTo(transacoesMock.Sum(t => t.Valor)));
-                Assert.That(response.Data.Transacoes.Count, Is.EqualTo(transacoesMock.Count));
+                Assert.That(response.Data.Transacoes, Has.Count.EqualTo(transacoesMock.Count));
                 Assert.That(response.Data.Fechamento, Is.EqualTo(expectedFechamento));
                 Assert.That(response.Data.Vencimento, Is.EqualTo(expectedVencimento));
                 Assert.That(response.Data.CartaoCredito.Id, Is.EqualTo(cartaoMock.Id));
