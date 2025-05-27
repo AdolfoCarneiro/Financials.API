@@ -16,13 +16,18 @@ namespace Financials.Services.Tests.Services.Transacao
         private RegistrarTransacao _registrarTransacao;
         private Mock<IValidator<RegristrarTransacaoRequest>> _validatorMock;
         private Mock<ITransacaoRepositorio> _transacaoRepositorioMock;
+        private Mock<IUnitOfWork> _unitOfWorkMock;
 
         [SetUp]
         public void SetUp()
         {
             _validatorMock = new Mock<IValidator<RegristrarTransacaoRequest>>();
             _transacaoRepositorioMock = new Mock<ITransacaoRepositorio>();
-            _registrarTransacao = new RegistrarTransacao(_validatorMock.Object, _transacaoRepositorioMock.Object);
+            _unitOfWorkMock = new Mock<IUnitOfWork>();
+            _registrarTransacao = new RegistrarTransacao(
+                _validatorMock.Object,
+                _transacaoRepositorioMock.Object,
+                _unitOfWorkMock.Object);
         }
 
         [Test]
@@ -39,9 +44,8 @@ namespace Financials.Services.Tests.Services.Transacao
                 Assert.That(response.Valid, Is.False);
                 Assert.That(response.Error, Is.Not.Null);
                 Assert.That(response.Data, Is.Null);
-                _transacaoRepositorioMock.Verify(r => r.BeginTransactionAsync(), Times.Once);
-                _transacaoRepositorioMock.Verify(r => r.CommitTransactionAsync(), Times.Never);
-                _transacaoRepositorioMock.Verify(r => r.RollbackTransactionAsync(), Times.Never);
+                _unitOfWorkMock.Verify(r => r.SaveChangesAsync(), Times.Never);
+                _unitOfWorkMock.Verify(r => r.RollbackAsync(), Times.Never);
             });
         }
 
@@ -71,9 +75,8 @@ namespace Financials.Services.Tests.Services.Transacao
                 Assert.That(response.Valid, Is.True);
                 Assert.That(response.Error, Is.Null);
                 Assert.That(response.Data, Is.Not.Null);
-                _transacaoRepositorioMock.Verify(r => r.BeginTransactionAsync(), Times.Once);
-                _transacaoRepositorioMock.Verify(r => r.CommitTransactionAsync(), Times.Once);
-                _transacaoRepositorioMock.Verify(r => r.RollbackTransactionAsync(), Times.Never);
+                _unitOfWorkMock.Verify(r => r.SaveChangesAsync(), Times.Once);
+                _unitOfWorkMock.Verify(r => r.RollbackAsync(), Times.Never);
             });
         }
 
@@ -88,8 +91,10 @@ namespace Financials.Services.Tests.Services.Transacao
                 FrequenciaRecorrencia.Anual
             };
 
+            var interation = 0;
             foreach (var frequency in frequencies)
             {
+                interation++;
                 var request = new RegristrarTransacaoRequest
                 {
                     Recorrente = true,
@@ -114,9 +119,9 @@ namespace Financials.Services.Tests.Services.Transacao
                     Assert.That(response.Valid, Is.True);
                     Assert.That(response.Error, Is.Null);
                     Assert.That(response.Data, Is.Not.Null);
-                    _transacaoRepositorioMock.Verify(r => r.BeginTransactionAsync(), Times.Once);
-                    _transacaoRepositorioMock.Verify(r => r.CommitTransactionAsync(), Times.Once);
-                    _transacaoRepositorioMock.Verify(r => r.RollbackTransactionAsync(), Times.Never);
+   
+                    _unitOfWorkMock.Verify(r => r.SaveChangesAsync(), Times.Exactly(interation));
+                    _unitOfWorkMock.Verify(r => r.RollbackAsync(), Times.Never);
                 });
 
                 _transacaoRepositorioMock.Invocations.Clear();
@@ -151,9 +156,8 @@ namespace Financials.Services.Tests.Services.Transacao
                 Assert.That(response.Valid, Is.True);
                 Assert.That(response.Error, Is.Null);
                 Assert.That(response.Data, Is.Not.Null);
-                _transacaoRepositorioMock.Verify(r => r.BeginTransactionAsync(), Times.Once);
-                _transacaoRepositorioMock.Verify(r => r.CommitTransactionAsync(), Times.Once);
-                _transacaoRepositorioMock.Verify(r => r.RollbackTransactionAsync(), Times.Never);
+                _unitOfWorkMock.Verify(r => r.SaveChangesAsync(), Times.Once);
+                _unitOfWorkMock.Verify(r => r.RollbackAsync(), Times.Never);
             });
         }
 
@@ -185,9 +189,8 @@ namespace Financials.Services.Tests.Services.Transacao
                 Assert.That(response.Valid, Is.True);
                 Assert.That(response.Error, Is.Null);
                 Assert.That(response.Data, Is.Not.Null);
-                _transacaoRepositorioMock.Verify(r => r.BeginTransactionAsync(), Times.Once);
-                _transacaoRepositorioMock.Verify(r => r.CommitTransactionAsync(), Times.Once);
-                _transacaoRepositorioMock.Verify(r => r.RollbackTransactionAsync(), Times.Never);
+                _unitOfWorkMock.Verify(r => r.SaveChangesAsync(), Times.Once);
+                _unitOfWorkMock.Verify(r => r.RollbackAsync(), Times.Never);
 
                 Assert.That(transacoesCapturadas.Count, Is.EqualTo(3));
                 Assert.That(transacoesCapturadas[0].Valor, Is.EqualTo(33.33m)); // Valor arredondado
@@ -214,8 +217,8 @@ namespace Financials.Services.Tests.Services.Transacao
                           .ReturnsAsync(new ValidationResult());
             _transacaoRepositorioMock.Setup(r => r.Insert(It.IsAny<Entity.Transacao>()))
                                      .ReturnsAsync(transacaoMock);
-            _transacaoRepositorioMock.Setup(r => r.CommitTransactionAsync())
-                                     .ThrowsAsync(new Exception("Erro no commit"));
+            _unitOfWorkMock.Setup(r => r.SaveChangesAsync())
+                                     .ThrowsAsync(new Exception("Erro ao persistir alterações no banco"));
 
             var response = await _registrarTransacao.Handle(request, CancellationToken.None);
 
@@ -224,9 +227,8 @@ namespace Financials.Services.Tests.Services.Transacao
                 Assert.That(response.Valid, Is.False);
                 Assert.That(response.Error, Is.Not.Null);
                 Assert.That(response.Error.Type, Is.EqualTo(ResponseErrorType.InternalError));
-                _transacaoRepositorioMock.Verify(r => r.BeginTransactionAsync(), Times.Once);
-                _transacaoRepositorioMock.Verify(r => r.CommitTransactionAsync(), Times.Once);
-                _transacaoRepositorioMock.Verify(r => r.RollbackTransactionAsync(), Times.Once);
+                _unitOfWorkMock.Verify(r => r.SaveChangesAsync(), Times.Once);
+                _unitOfWorkMock.Verify(r => r.RollbackAsync(), Times.Once);
             });
         }
 
@@ -247,9 +249,8 @@ namespace Financials.Services.Tests.Services.Transacao
                 Assert.That(response.Data, Is.Null);
                 Assert.That(response.Error, Is.Not.Null);
                 Assert.That(response.Error.Type, Is.EqualTo(ResponseErrorType.InternalError));
-                _transacaoRepositorioMock.Verify(r => r.BeginTransactionAsync(), Times.Once);
-                _transacaoRepositorioMock.Verify(r => r.CommitTransactionAsync(), Times.Never);
-                _transacaoRepositorioMock.Verify(r => r.RollbackTransactionAsync(), Times.Once);
+                _unitOfWorkMock.Verify(r => r.SaveChangesAsync(), Times.Never);
+                _unitOfWorkMock.Verify(r => r.RollbackAsync(), Times.Once);
             });
         }
     }

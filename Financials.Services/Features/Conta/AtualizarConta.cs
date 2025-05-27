@@ -9,11 +9,14 @@ using MediatR;
 namespace Financials.Services.Features.Conta
 {
     public class AtualizarConta(
-        IContaRespositorio contaRespositorio, IValidator<AtualizarContaRequest> validator
+        IContaRespositorio contaRespositorio,
+        IValidator<AtualizarContaRequest> validator,
+        IUnitOfWork unitOfWork
         ) : IRequestHandler<AtualizarContaRequest, ApplicationResponse<ContaDTO>>
     {
         private readonly IContaRespositorio _contaRespositorio = contaRespositorio;
         private readonly IValidator<AtualizarContaRequest> _validator = validator;
+        private readonly IUnitOfWork _unitOfWork = unitOfWork;
         public async Task<ApplicationResponse<ContaDTO>> Handle(AtualizarContaRequest request, CancellationToken cancellationToken = default)
         {
             var response = new ApplicationResponse<ContaDTO>();
@@ -38,7 +41,9 @@ namespace Financials.Services.Features.Conta
                 conta.Nome = request.Nome;
                 conta.SaldoInicial = request.SaldoInicial;
 
-                await _contaRespositorio.Update(conta);
+                _contaRespositorio.Update(conta);
+
+                await _unitOfWork.SaveChangesAsync();
 
                 response.AddData(conta.ToMapper());
             }

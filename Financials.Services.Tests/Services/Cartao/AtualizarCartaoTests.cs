@@ -16,6 +16,7 @@ namespace Financials.Services.Tests.Services.Cartao
         private Mock<ICartaoCreditoRepositorio> _cartaoCreditoRepositorioMock;
         private Mock<IDataFechamentoCartaoRepositorio> _dataFechamentoCartaoRepositorioMock;
         private Mock<IValidator<AtualizarCartaoRequest>> _validatorMock;
+        private Mock<IUnitOfWork> _unitOfWorkMock;
 
         [SetUp]
         public void SetUp()
@@ -23,7 +24,13 @@ namespace Financials.Services.Tests.Services.Cartao
             _cartaoCreditoRepositorioMock = new Mock<ICartaoCreditoRepositorio>();
             _dataFechamentoCartaoRepositorioMock = new Mock<IDataFechamentoCartaoRepositorio>();
             _validatorMock = new Mock<IValidator<AtualizarCartaoRequest>>();
-            _atualizarCartao = new AtualizarCartao(_cartaoCreditoRepositorioMock.Object, _dataFechamentoCartaoRepositorioMock.Object, _validatorMock.Object);
+            _unitOfWorkMock = new Mock<IUnitOfWork>();
+            _atualizarCartao = new AtualizarCartao(
+                _cartaoCreditoRepositorioMock.Object,
+                _dataFechamentoCartaoRepositorioMock.Object,
+                _validatorMock.Object,
+                _unitOfWorkMock.Object
+                );
         }
 
         [Test]
@@ -48,9 +55,8 @@ namespace Financials.Services.Tests.Services.Cartao
                 Assert.That(response.Error, Is.Not.Null);
                 Assert.That(response.Data, Is.Null);
                 Assert.That(response.Error.Type, Is.EqualTo(ResponseErrorType.ValidationError));
-                _cartaoCreditoRepositorioMock.Verify(r => r.BeginTransactionAsync(), Times.Once);
-                _cartaoCreditoRepositorioMock.Verify(r => r.RollbackTransactionAsync(), Times.Never);
-                _cartaoCreditoRepositorioMock.Verify(r => r.CommitTransactionAsync(), Times.Never);
+                _unitOfWorkMock.Verify(r => r.RollbackAsync(), Times.Never);
+                _unitOfWorkMock.Verify(r => r.SaveChangesAsync(), Times.Never);
             });
         }
 
@@ -69,7 +75,7 @@ namespace Financials.Services.Tests.Services.Cartao
             _validatorMock.Setup(v => v.ValidateAsync(It.IsAny<AtualizarCartaoRequest>(), It.IsAny<CancellationToken>()))
                           .ReturnsAsync(new ValidationResult());
             _cartaoCreditoRepositorioMock.Setup(r => r.GetById(It.IsAny<Guid>()))
-                                         .ReturnsAsync((Entity.CartaoCredito)null);
+                                         .ReturnsAsync((CartaoCredito)null!);
 
             var response = await _atualizarCartao.Handle(request, CancellationToken.None);
 
@@ -79,9 +85,8 @@ namespace Financials.Services.Tests.Services.Cartao
                 Assert.That(response.Error, Is.Not.Null);
                 Assert.That(response.Data, Is.Null);
                 Assert.That(response.Error.Type, Is.EqualTo(ResponseErrorType.NotFound));
-                _cartaoCreditoRepositorioMock.Verify(r => r.BeginTransactionAsync(), Times.Once);
-                _cartaoCreditoRepositorioMock.Verify(r => r.RollbackTransactionAsync(), Times.Never);
-                _cartaoCreditoRepositorioMock.Verify(r => r.CommitTransactionAsync(), Times.Never);
+                _unitOfWorkMock.Verify(r => r.RollbackAsync(), Times.Never);
+                _unitOfWorkMock.Verify(r => r.SaveChangesAsync(), Times.Never);
             });
         }
 
@@ -110,8 +115,8 @@ namespace Financials.Services.Tests.Services.Cartao
                           .ReturnsAsync(new ValidationResult());
             _cartaoCreditoRepositorioMock.Setup(r => r.GetById(It.IsAny<Guid>()))
                                          .ReturnsAsync(cartaoMock);
-            _cartaoCreditoRepositorioMock.Setup(r => r.Update(It.IsAny<Entity.CartaoCredito>()))
-                                         .ReturnsAsync(cartaoMock);
+            _cartaoCreditoRepositorioMock.Setup(r => r.Update(It.IsAny<CartaoCredito>()))
+                                         .Returns(cartaoMock);
 
             var response = await _atualizarCartao.Handle(request, CancellationToken.None);
 
@@ -125,9 +130,8 @@ namespace Financials.Services.Tests.Services.Cartao
                 Assert.That(response.Data.DataFechamento, Is.EqualTo(request.DataFechamento));
                 Assert.That(response.Data.DataVencimento, Is.EqualTo(request.DataVencimento));
                 Assert.That(response.Data.Limite, Is.EqualTo(request.Limite));
-                _cartaoCreditoRepositorioMock.Verify(r => r.BeginTransactionAsync(), Times.Once);
-                _cartaoCreditoRepositorioMock.Verify(r => r.CommitTransactionAsync(), Times.Once);
-                _cartaoCreditoRepositorioMock.Verify(r => r.RollbackTransactionAsync(), Times.Never);
+                _unitOfWorkMock.Verify(r => r.SaveChangesAsync(), Times.Once);
+                _unitOfWorkMock.Verify(r => r.RollbackAsync(), Times.Never);
                 _dataFechamentoCartaoRepositorioMock.Verify(r => r.Insert(It.IsAny<Entity.DataFechamentoCartaoCredito>()), Times.Never);
             });
         }
@@ -165,8 +169,8 @@ namespace Financials.Services.Tests.Services.Cartao
                           .ReturnsAsync(new ValidationResult());
             _cartaoCreditoRepositorioMock.Setup(r => r.GetById(It.IsAny<Guid>()))
                                          .ReturnsAsync(cartaoMock);
-            _cartaoCreditoRepositorioMock.Setup(r => r.Update(It.IsAny<Entity.CartaoCredito>()))
-                                         .ReturnsAsync(cartaoMock);
+            _cartaoCreditoRepositorioMock.Setup(r => r.Update(It.IsAny<CartaoCredito>()))
+                                         .Returns(cartaoMock);
             _dataFechamentoCartaoRepositorioMock.Setup(r => r.Insert(It.IsAny<Entity.DataFechamentoCartaoCredito>()))
                                                 .ReturnsAsync(dataFechamentoMock);
 
@@ -182,9 +186,8 @@ namespace Financials.Services.Tests.Services.Cartao
                 Assert.That(response.Data.DataFechamento, Is.EqualTo(request.DataFechamento));
                 Assert.That(response.Data.DataVencimento, Is.EqualTo(request.DataVencimento));
                 Assert.That(response.Data.Limite, Is.EqualTo(request.Limite));
-                _cartaoCreditoRepositorioMock.Verify(r => r.BeginTransactionAsync(), Times.Once);
-                _cartaoCreditoRepositorioMock.Verify(r => r.CommitTransactionAsync(), Times.Once);
-                _cartaoCreditoRepositorioMock.Verify(r => r.RollbackTransactionAsync(), Times.Never);
+                _unitOfWorkMock.Verify(r => r.SaveChangesAsync(), Times.Once);
+                _unitOfWorkMock.Verify(r => r.RollbackAsync(), Times.Never);
                 _dataFechamentoCartaoRepositorioMock.Verify(r => r.Insert(It.IsAny<Entity.DataFechamentoCartaoCredito>()), Times.Once);
             });
         }
@@ -205,8 +208,8 @@ namespace Financials.Services.Tests.Services.Cartao
                           .ReturnsAsync(new ValidationResult());
             _cartaoCreditoRepositorioMock.Setup(r => r.GetById(It.IsAny<Guid>()))
                                          .ReturnsAsync(new Entity.CartaoCredito());
-            _cartaoCreditoRepositorioMock.Setup(r => r.Update(It.IsAny<Entity.CartaoCredito>()))
-                                         .ThrowsAsync(new Exception("Erro ao atualizar cartão"));
+            _cartaoCreditoRepositorioMock.Setup(r => r.Update(It.IsAny<CartaoCredito>()))
+                                         .Throws(new Exception("Erro ao atualizar cartão"));
 
             var response = await _atualizarCartao.Handle(request, CancellationToken.None);
 
@@ -216,9 +219,8 @@ namespace Financials.Services.Tests.Services.Cartao
                 Assert.That(response.Data, Is.Null);
                 Assert.That(response.Error, Is.Not.Null);
                 Assert.That(response.Error.Type, Is.EqualTo(ResponseErrorType.InternalError));
-                _cartaoCreditoRepositorioMock.Verify(r => r.BeginTransactionAsync(), Times.Once);
-                _cartaoCreditoRepositorioMock.Verify(r => r.RollbackTransactionAsync(), Times.Once);
-                _cartaoCreditoRepositorioMock.Verify(r => r.CommitTransactionAsync(), Times.Never);
+                _unitOfWorkMock.Verify(r => r.RollbackAsync(), Times.Once);
+                _unitOfWorkMock.Verify(r => r.SaveChangesAsync(), Times.Never);
             });
         }
     }

@@ -11,20 +11,20 @@ namespace Financials.Services.Features.Transacao;
 
 public class RegistrarTransacao(
         IValidator<RegristrarTransacaoRequest> validator,
-        ITransacaoRepositorio transacaoRepositorio
+        ITransacaoRepositorio transacaoRepositorio,
+        IUnitOfWork unitOfWork
     )
     : IRequestHandler<RegristrarTransacaoRequest, ApplicationResponse<TransacaoDTO>>
 {
     private readonly IValidator<RegristrarTransacaoRequest> _validator = validator;
     private readonly ITransacaoRepositorio _transacaoRepositorio = transacaoRepositorio;
+    private readonly IUnitOfWork _unitOfWork = unitOfWork;
 
     public async Task<ApplicationResponse<TransacaoDTO>> Handle(RegristrarTransacaoRequest request, CancellationToken cancellationToken)
     {
         var response = new ApplicationResponse<TransacaoDTO>();
         try
         {
-            await _transacaoRepositorio.BeginTransactionAsync();
-
             var validacao = await _validator.ValidateAsync(request, cancellationToken);
             if (!validacao.IsValid)
             {
@@ -100,11 +100,11 @@ public class RegistrarTransacao(
                 var result = transacoes.First().ToMapper();
                 response.AddData(result);
             }
-            await _transacaoRepositorio.CommitTransactionAsync();
+            await _unitOfWork.SaveChangesAsync();
         }
         catch (Exception ex)
         {
-            await _transacaoRepositorio.RollbackTransactionAsync();
+            await _unitOfWork.RollbackAsync();
             response.AddError(ex, "Erro ao registrar a transação");
         }
         return response;

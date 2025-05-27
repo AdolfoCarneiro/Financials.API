@@ -15,13 +15,19 @@ namespace Financials.Services.Tests.Services.Conta
         private AtualizarConta _atualizarConta;
         private Mock<IContaRespositorio> _contaRepositorioMock;
         private Mock<IValidator<AtualizarContaRequest>> _validatorMock;
+        private Mock<IUnitOfWork> _unitOfWorkMock;
 
         [SetUp]
         public void SetUp()
         {
             _contaRepositorioMock = new Mock<IContaRespositorio>();
             _validatorMock = new Mock<IValidator<AtualizarContaRequest>>();
-            _atualizarConta = new AtualizarConta(_contaRepositorioMock.Object, _validatorMock.Object);
+            _unitOfWorkMock = new Mock<IUnitOfWork>();
+            _atualizarConta = new AtualizarConta(
+                _contaRepositorioMock.Object,
+                _validatorMock.Object,
+                _unitOfWorkMock.Object
+                );
         }
 
         [Test]
@@ -64,11 +70,11 @@ namespace Financials.Services.Tests.Services.Conta
         [Test]
         public async Task Handle_SuccessfulUpdate_ReturnsSuccessResponseWithData()
         {
-            var contaMock = new Entity.Conta {};
+            var contaMock = new Entity.Conta { };
             _validatorMock.Setup(v => v.ValidateAsync(It.IsAny<AtualizarContaRequest>(), It.IsAny<CancellationToken>()))
                           .ReturnsAsync(new ValidationResult());
             _contaRepositorioMock.Setup(r => r.GetById(It.IsAny<Guid>())).ReturnsAsync(contaMock);
-            _contaRepositorioMock.Setup(r => r.Update(It.IsAny<Entity.Conta>())).ReturnsAsync(contaMock);
+            _contaRepositorioMock.Setup(r => r.Update(It.IsAny<Entity.Conta>())).Returns(contaMock);
 
             var request = new AtualizarContaRequest();
             var response = await _atualizarConta.Handle(request);
