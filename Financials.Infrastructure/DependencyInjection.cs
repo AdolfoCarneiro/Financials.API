@@ -23,7 +23,7 @@ namespace Financials.Infrastructure
             var defaultConnectionString = configuration.GetConnectionString("DefaultConnection");
             services.AddDbContext<FinancialsDbContext>((provider, options) =>
             {
-                options.UseSqlServer(defaultConnectionString);
+                options.UseNpgsql(defaultConnectionString);
                 options.UseLazyLoadingProxies();
             });
 

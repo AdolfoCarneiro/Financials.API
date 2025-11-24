@@ -87,7 +87,7 @@ namespace Financials.API
             builder.Services.AddInfrastructure(builder.Configuration);
             builder.Services.AddInitialSeedData();
             builder.Services.AddValidators();
-            builder.Services.AddServices();
+            builder.Services.AddApplicationServices();
 
             var app = builder.Build();
 

@@ -1,0 +1,55 @@
+# Git
+.git
+.gitignore
+.gitattributes
+
+# Build results
+**/bin/
+**/obj/
+**/out/
+
+# Visual Studio
+.vs/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# Visual Studio Code
+.vscode/
+
+# Rider
+.idea/
+
+# Build artifacts
+**/packages/
+**/artifacts/
+
+# Test results
+**/*.trx
+**/TestResults/
+
+# NuGet
+*.nupkg
+*.snupkg
+
+# Local development
+appsettings.Development.json
+appsettings.Local.json
+*.db
+*.db-shm
+*.db-wal
+
+# Logs
+**/logs/
+*.log
+
+# OS
+**/.DS_Store
+**/Thumbs.db
+
+# Migrations (optional - comment out if you want to include migrations in image)
+# **/Migrations/
+
+# README
+README.md
