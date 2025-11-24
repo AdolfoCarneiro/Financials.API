@@ -43,7 +43,10 @@ namespace Financials.Services.Features.Fatura
                 .GetByExpression(c => c.CartaoCreditoId == request.CartaoId)
                 .OrderByDescending(c => c.DataAlteracao);
 
-                var dataFechamentoVigente = ObterDataFechamentoVigente(alteracoesFechamento, request.DataReferencia);
+                var dataFechamentoVigente = ObterDataFechamentoVigente(
+                    alteracoesFechamento,
+                    request.DataReferencia,
+                    cartao.DataFechamento);
                 var (dataInicio, dataFim) = ObterPeriodoFatura(dataFechamentoVigente, request.DataReferencia);
 
                 var transacoes = _transacaoRepositorio
@@ -70,9 +73,13 @@ namespace Financials.Services.Features.Fatura
             return response;
         }
 
-        private static DateTime ObterDataFechamentoVigente(IEnumerable<DataFechamentoCartaoCredito> alteracoes, DateTime dataReferencia)
+        private static DateTime ObterDataFechamentoVigente(
+            IEnumerable<DataFechamentoCartaoCredito> alteracoes,
+            DateTime dataReferencia,
+            DateTime dataFechamentoAtual)
         {
-            return alteracoes.FirstOrDefault(c => c.DataAlteracao <= dataReferencia)?.DataFechamentoAnterior ?? dataReferencia;
+            return alteracoes.FirstOrDefault(c => c.DataAlteracao <= dataReferencia)?.DataFechamentoAnterior
+                ?? dataFechamentoAtual;
         }
 
         private static (DateTime dataInicio, DateTime dataFim) ObterPeriodoFatura(DateTime dataFechamento, DateTime dataReferencia)
